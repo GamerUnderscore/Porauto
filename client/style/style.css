@@ -4,10 +4,12 @@ body {
     display: flex;
     gap: 20px;
     padding: 20px;
+    overflow: hidden;
 }
 
 #main{
     overflow-x: auto;
+    min-width: 30vw;
 }
 #port {
     display: grid;
@@ -95,4 +97,9 @@ body {
 }
 .success {
     color: #0a0;
+}
+#schemas-grue{
+    /* fit maximum content */
+    width: 80vw;
+
 }
