@@ -1,0 +1,31 @@
+{
+  "name": "gestion-portuaire",
+  "productName": "gestion-portuaire",
+  "description": "Gestion du port autonome",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "mahe",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "serialport": "^13.0.0",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "electron": "40.1.0",
+    "electron-builder": "^26.7.0"
+  },
+  "build": {
+    "appId": "com.mahe.gestionport",
+    "productName": "Gestion Portuaire",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable"
+    }
+  }
+}
