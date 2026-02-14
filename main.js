@@ -11,6 +11,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1000,
         height: 600,
+        icon: path.join(__dirname, 'favicon.ico'), // Utilisation du chemin reconstruit
         webPreferences: {
             // Utilise le chemin reconstruit ici
             preload: path.join(__dirname, 'preload.js'),

@@ -71,24 +71,27 @@ function renderPort() {
        
             portDiv.appendChild(cell);
         });
+    }); 
+
+    const dropdownButtons = document.querySelectorAll('.request-drpdwn-btn');
+    dropdownButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const inputField = document.querySelector('.input-group .form-control');
+            inputField.innerText = button.value;
+        });
     });
+
+
 }
-
-
 
 function renderTemp() {
     const tempDiv = document.getElementById("temp");
     tempDiv.innerHTML = TEMP.map(c => c.id).join(", ");
 }
-
 function renderActions() {
     document.getElementById("actions").innerText =
         actionList.map(a => `${a.type} ${a.container} : ${a.from} → ${a.to}`).join("\n");
 }
-
-// ----------------------
-// LOGIQUE MÉTIER
-// ----------------------
 function findContainer(id) {
     for (let pos in port) {
         const index = port[pos].findIndex(c => c.id === id);
@@ -97,17 +100,11 @@ function findContainer(id) {
 }
 
 
-const dropdownButtons = document.querySelectorAll('.request-drpdwn-btn');
-dropdownButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const inputField = document.querySelector('.input-group .form-control');
-        inputField.innerText = button.value;
-    });
-});
+// Menu déplacement contenneur 
 
+// (force à choisir LETTRE/CHIFFRE)
 const inputLetter = document.querySelector('.r-i-letter');
 const inputNumber = document.querySelector('.r-i-number');
-
 inputLetter.addEventListener('input', () => {
     inputLetter.value = inputLetter.value.toUpperCase();
     // limit to one character A-D
@@ -129,13 +126,10 @@ inputNumber.addEventListener('input', () => {
 });
 
 const rInputDropdownInfo = document.getElementById('r-drpdwn-info');
-
 const rInfoX = document.getElementById('r-drpdwn-info-x');
 const rInfoY = document.getElementById('r-drpdwn-info-y');
-
 const rInputX = document.querySelector('.r-i-letter');
 const rInputY = document.querySelector('.r-i-number');
-
 function planMove(containerId) {
     rInputDropdownInfo.innerText = containerId;
     const found = findContainer(containerId);
@@ -144,6 +138,7 @@ function planMove(containerId) {
     rInputX.value = "";
     rInputY.value = "";
 }
+
 
 const rSubmitButton = document.getElementById('r-submit');
 rSubmitButton.addEventListener('click', () => {
@@ -204,7 +199,7 @@ function planMove2(containerId, target) {
 }
 
 // ----------------------
-// SIMULATION EXÉCUTION
+// SIMULATION EXÉCUTION (temp)
 // ----------------------
 function executeActions() {
 
@@ -280,7 +275,6 @@ function ReloadPorts() { // COM
 
 
 window.addEventListener("load", (event) => {
-   renderAll();
    ReloadPorts()
 
     $("#btn-download-data").click(() => {
@@ -328,113 +322,11 @@ window.addEventListener("load", (event) => {
 });
 
 
-const container = document.querySelector('#table');
-const contextMenuSettings = {
-  callback(key, selection, clickEvent) {
-    console.log(key, selection, clickEvent);
-  },
-  items: {
-    about: {
-      name() {
-        return 'Déplacer';
-      },
-      hidden() {
-          return this.getSelectedLast()?.[0] - this.getSelectedLast()?.[2] != 0;
-      },
-      callback() {
-        setTimeout(() => {
-            const cell = this.getSelectedLast();
-            const id = this.getDataAtCell(cell[0], 0);
 
-            
-            $('#requestPosition').modal('show')
-            
 
-            planMove(id);
-        }, 1);
-      },
-    },
 
-    // credits: {
-    //   // Own custom property
-    //   // Custom rendered element in the context menu
-    //   renderer() {
-    //     const elem = document.createElement('marquee');
-    //     elem.textContent = 'Petit message';
 
-    //     return elem;
-    //   },
-    //   disableSelection: true,
-    //   isCommand: false, // Prevent clicks from executing command and closing the menu
-    // },
-  },
-};
-
-const hot = new Handsontable(container, {
-
-  themeName: 'ht-theme-main-dark-auto',
-  data: [],
-  stretchH: 'all',
-  height: 'auto',
-  colHeaders: ['ID', 'Position', 'Hauteur', 'Companie', 'Date d\'arrivée', 'Date de départ', 'Destination','Statut', 'Description'],
-  licenseKey: 'non-commercial-and-evaluation',
-  columns: [
-    {
-        data: 'id',
-        editor: false,
-        readOnly: true,
-    },
-    {
-        data: 'position',
-        editor: 'text',
-        readOnly: true,
-    },
-    {
-        data: 'hauteur',
-        editor: 'text',
-        readOnly: true,
-    },
-    {
-        data: 'company',
-        editor: 'text',
-    },
-    {
-        data: 'arrivalDate',
-        type: 'date',
-        dateFormat: 'DD/MM/YYYY',
-        correctFormat: true,
-        defaultDate: '01/01/2024',
-    },
-    {  
-        data: 'departureDate',
-        type: 'date',
-        dateFormat: 'DD/MM/YYYY',
-        correctFormat: true,
-        defaultDate: '01/01/2024',
-    },
-    {  
-        data: 'destination',
-        editor: 'text',
-    },
-    {  
-        data: 'status',
-        editor: 'text',
-    },
-    {   
-        data: 'description',
-        editor: 'text',
-    },
-  ],
-  autoWrapRow: true,
-  autoWrapCol: true,
-  contextMenu: true,
-  licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-  contextMenu: contextMenuSettings,
-  afterChange: function(changes, source) {
-    if (source === 'loadData' || !changes) return; // Ignore changes caused by loadData or if there are no changes
-    sendTableDataToServer();
-  }
-});
+// Partie log
 socket.on("log", (data) => {
     const logList = document.getElementById("logList");
     const li = document.createElement("li");
@@ -445,7 +337,6 @@ socket.on("log", (data) => {
 
     showNotification(levelString[data.level], data.message, levelNotificationType[data.level]);
 });
-
 socket.on("oldLog", (logs) => {
     const logList = document.getElementById("logList");
     logs.forEach(data => {
@@ -455,6 +346,8 @@ socket.on("oldLog", (logs) => {
         logList.appendChild(li);
     });
 });
+
+// Autre
 socket.on("portsList", (ports) => {
     var html = "";
     ports.forEach((port, index) => {
@@ -463,9 +356,6 @@ socket.on("portsList", (ports) => {
     setActivePort("...");
     $("#arduino-ports-dropdown").html(html);
 });
-
-
-
 socket.on("setCommunicationStatus", (status, noModal) => {
     communicationStatus = status;
     const circleStatus = document.getElementById("communication-status");
@@ -494,7 +384,6 @@ socket.on("arduino-data", (data) => {
     logList.appendChild(li);
 });
 socket.on('getTableData', (data) => {
-    // TRANSFORMER data de array of arrays en array of objects
     const tableData = data.map(row => ({
         id: row[0],
         position: row[1],
@@ -507,6 +396,12 @@ socket.on('getTableData', (data) => {
         description: row[8],
     }));
     hot.loadData(tableData);
+    tableData.forEach(container => {
+        if (container.position) {
+            port[container.position].push(container);
+        };
+    });
+    renderPort();
 });
 
 var input = document.getElementById("arduino-cmd-input");
