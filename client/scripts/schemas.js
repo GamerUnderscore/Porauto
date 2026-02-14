@@ -5,14 +5,15 @@ var data = {}
 socket.on('data', (data) => {
     data = data;
 });
-
-
+const canvasSize = 1.2;
+canvas.width = window.innerWidth * canvasSize;
+canvas.height = window.innerHeight * canvasSize;
 // on load
-window.addEventListener('load', () => {
+window.addEventListener('resize', () => {
     // mettre a la taille le canvas
 
-    canvas.width = window.innerWidth * 0.8;
-    canvas.height = window.innerHeight * 0.8;
+    canvas.width = window.innerWidth * canvasSize;
+    canvas.height = window.innerHeight * canvasSize;
     const ctx = canvas.getContext('2d');
 });
 

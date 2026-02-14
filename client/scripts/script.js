@@ -21,7 +21,7 @@ const levelNotificationType = {
 const offcanvasElementList = document.querySelectorAll('.offcanvas')
 const offcanvasList = [...offcanvasElementList].map(offcanvasEl => new bootstrap.Offcanvas(offcanvasEl))
 
-
+let communicationStatus = false;
 let port = {};
 let TEMP = [];
 let actionList = [];
@@ -32,13 +32,6 @@ function initPort() {
             port[`${c}${r}`] = [];
         });
     });
-
-    // conteneurs de démo
-    port["A1"].push({ id: "C1" });
-    port["A2"].push({ id: "C2" });
-    port["A2"].push({ id: "C3" });
-    port["B1"].push({ id: "C4" });
-
 }
 initPort();
 
@@ -214,6 +207,9 @@ function planMove2(containerId, target) {
 // SIMULATION EXÉCUTION
 // ----------------------
 function executeActions() {
+
+    if (!communicationStatus) return showNotification("Erreur", "Impossible d'exécuter les actions : pas de communication avec l'Arduino", "danger");
+    if (actionList.length === 0) return showNotification("Erreur", "Aucune action planifiée", "danger");
     actionList.forEach(a => {
         if (a.from !== "TEMP") {
             const stack = port[a.from];
@@ -235,12 +231,6 @@ function executeActions() {
     actionList = [];
     renderAll();
 }
-
-// function showNotification(text) {
-//     notification.querySelector('.toast-body').innerText = text
-//     const toast = new bootstrap.Toast(notification)
-//     toast.show()
-// }
 
 function showNotification(title, message, type = 'primary') {
     const container = document.getElementById('toastContainer');
@@ -281,18 +271,59 @@ function showNotification(title, message, type = 'primary') {
 // ----------------------
 function renderAll() {
     renderPort();
-    renderTable();
     renderTemp();
     renderActions();
 }
-function ReloadPorts() {
+function ReloadPorts() { // COM
     socket.emit("getPorts");
 }
 
 
 window.addEventListener("load", (event) => {
    renderAll();
-    ReloadPorts()
+   ReloadPorts()
+
+    $("#btn-download-data").click(() => {
+        alert('ok')
+        const data = hot.getData();
+        const csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "tableData.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    $("#btn-import-data").click(() => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".csv";
+        fileInput.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const rows = text.split("\n").map(row => row.split(","));
+                const tableData = rows.map(row => ({
+                    id: row[0],
+                    position: row[1],
+                    hauteur: row[2],
+                    company: row[3],
+                    arrivalDate: row[4],
+                    departureDate: row[5],
+                    destination: row[6],
+                    status: row[7],
+                    description: row[8],
+                }));
+                hot.loadData(tableData);
+                sendTableDataToServer();
+            };
+            reader.readAsText(file);
+        });
+        fileInput.click();
+    });
    
 });
 
@@ -398,30 +429,12 @@ const hot = new Handsontable(container, {
   autoWrapCol: true,
   contextMenu: true,
   licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-  contextMenu: contextMenuSettings
+  contextMenu: contextMenuSettings,
+  afterChange: function(changes, source) {
+    if (source === 'loadData' || !changes) return; // Ignore changes caused by loadData or if there are no changes
+    sendTableDataToServer();
+  }
 });
-
-
-function renderTable() {
-    const tableData = [];
-
-    // On parcourt ton objet 'port'
-    Object.entries(port).forEach(([pos, stack]) => {
-        // stack est le tableau de conteneurs à cette position
-        stack.forEach((c, z) => {
-            // On crée un objet pour chaque ligne du tableau
-            tableData.push({
-                id: c.id,          // L'identifiant du conteneur (ex: "CONT123")
-                position: pos,  // La clé de ton objet (ex: "A1")
-                hauteur: z      // L'index dans le stack (la hauteur Z)
-            });
-        });
-    });
-
-    // On envoie tout d'un coup au tableau
-    hot.loadData(tableData);
-}
-
 socket.on("log", (data) => {
     const logList = document.getElementById("logList");
     const li = document.createElement("li");
@@ -454,9 +467,10 @@ socket.on("portsList", (ports) => {
 
 
 socket.on("setCommunicationStatus", (status, noModal) => {
+    communicationStatus = status;
     const circleStatus = document.getElementById("communication-status");
     circleStatus.style.backgroundColor = status ? "#00ff0a" : "red";
-
+    $('#arduino-cmd-input').prop('disabled', !status);
     if (status && !noModal) {
         const modal = new bootstrap.Modal(document.getElementById('arduinoPortModal'));
         if (document.querySelector(".modal-backdrop")) {
@@ -479,6 +493,22 @@ socket.on("arduino-data", (data) => {
     li.innerText = `[ARDUINO] ${data}`;
     logList.appendChild(li);
 });
+socket.on('getTableData', (data) => {
+    // TRANSFORMER data de array of arrays en array of objects
+    const tableData = data.map(row => ({
+        id: row[0],
+        position: row[1],
+        hauteur: row[2],
+        company: row[3],
+        arrivalDate: row[4],
+        departureDate: row[5],
+        destination: row[6],
+        status: row[7],
+        description: row[8],
+    }));
+    hot.loadData(tableData);
+});
+
 var input = document.getElementById("arduino-cmd-input");
 input.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
@@ -487,3 +517,16 @@ input.addEventListener("keypress", function (event) {
         input.value = "";
     }
 });
+
+$('#btn-stop').click(() => {
+    if (!communicationStatus) return showNotification("Erreur", "Impossible d'arrêter : pas de communication avec l'Arduino", "danger");
+    socket.emit("stopArduino");
+});
+socket.on('onStopArduino', () => {
+    showNotification("Information", "Demande reçue: ARRÊT D'URGENCE", "info");
+});
+
+function sendTableDataToServer() {
+    const tableData = hot.getData();
+    socket.emit("tableData", tableData);
+}

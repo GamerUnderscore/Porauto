@@ -28,13 +28,14 @@
             type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Paramètres</button>
         <button class="nav-link" id="v-pills-logs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logs"
             type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false">Logs</button>
-
-        <div class="d-flex align-items-center mt-3">
-            <div>Connection <div class="tinyCircle" id="communication-status"></div></div>
+        <br>
+        <div class="d-flex flex-column mb-3 align-items-center">
+            <div>Connection <div class="tinyCircle" id="communication-status"></div>
+            <button type="button" class="btn btn-danger" id="btn-stop">Arrêt d'urgence</button>
         </div>
         
-            
     </div>
+</div>
     <div class="tab-content" id="v-pills-tabContent" style="width: 100%;">
         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab"
             tabindex="0">
@@ -81,19 +82,35 @@
                 <div id="arduino-cmd">
                 </div>
                 <div class="input-group mb-3" style="margin-bottom: 0 !important; border-bottom: none;">
-                    <span class="input-group-text" id="basic-addon1">$</span>
+                    <span class="input-group-text">$</span>
                     <input type="text" class="form-control" placeholder="Commande Arduino" aria-label="Commande Arduino "
-                        aria-describedby="basic-addon1" id="arduino-cmd-input">
+                        aria-describedby="basic-addon1" id="arduino-cmd-input" >
                 </div>
             </div>
 
-            
+            <br>
 
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-primary">+</button>
-                <button type="button" class="btn btn-primary">-</button>
+            <div class="list-group">
+                <div class="d-inline-flex gap-1">
+                    <span class="input-group-text">Moteur A</span>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-primary">+</button>
+                        <button type="button" class="btn btn-primary">-</button>
+                    </div>
+                    <span class="input-group-text">0.0</span>
+                </div>
+                <br>
+                <div class="d-inline-flex gap-1">
+                    <span class="input-group-text">Moteur B</span>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-primary">+</button>
+                        <button type="button" class="btn btn-primary">-</button>
+                    </div>
+                    <span class="input-group-text">0.0</span>
+                </div>
             </div>
-            <div class="input-group-text" id="btnGroupAddon">@</div>
+
+            <button type="button" class="btn btn-primary" onclick="sendTableDataToServer()">Envoyer les données au serveur</button>
         
         </div>
 
@@ -117,12 +134,12 @@
                 </div>
             </div><br><br>
 
-            <button type="button" class="btn btn-primary" aria-label="Mute">
+            <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-import-data">
                 <img src="client/assets/icons/import.svg" alt="" style="filter: invert(1);">
                 Importer les données
             </button>
 
-            <button type="button" class="btn btn-primary" aria-label="Mute">
+            <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-download-data">
                 <img src="client/assets/icons/download.svg" alt="" style="filter: invert(1);">
                 Télécharger les données
             </button>
@@ -157,27 +174,7 @@
                             
                         </div>
                     </div>
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab"
-                        tabindex="0">
-                        <div id="main">
-                            <div id="port"></div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab"
-                        tabindex="0">
-                
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-primary">
-                                <img src="client/assets/icons/download.svg" alt="" style="filter: invert(1);">
-                                Télécharger les données
-                            </button>
-                
-                            <button type="button" class="btn btn-primary">
-                                <img src="client/assets/icons/import.svg" alt="" style="filter: invert(1);">
-                                Importer les données
-                            </button>
-                        </div>
-                    </div>
+        
                 </div>
         </div>
 

@@ -9,6 +9,11 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// fichier appdata pour windows / home directory pour linux et macos
+const __tempdir = path.join(process.platform === 'win32' ? process.env.APPDATA : process.env.HOME, 'porauto');
+
+
 const levelString = {
     0: "INFO",
     1: "WARN",
@@ -61,6 +66,7 @@ io.on('connection', (socket) => {
     console.log('Un utilisateur s\'est connecté:', socket.id);
 
     socket.emit('setCommunicationStatus', communicationStatus, true);
+    socket.emit('getTableData', fs.existsSync(path.join(__tempdir, 'tableData.json')) ? JSON.parse(fs.readFileSync(path.join(__tempdir, 'tableData.json'))) : []);
 
     socket.on('disconnect', () => {
         console.log('Un utilisateur s\'est déconnecté:', socket.id);
@@ -85,6 +91,24 @@ io.on('connection', (socket) => {
                 }
             });
         }
+    });
+    socket.on('stopArduino', () => {
+        if (activePort && activePort.isOpen) {
+            activePort.write('STOP\n', (err) => {
+                if (err) {
+                    logToClient(`Erreur lors de l'envoi de la commande STOP à l'Arduino : ${err.message}`, 2, true);
+                }else{
+                    socket.emit('onStopArduino');
+                }
+            });
+        }
+    });
+    socket.on('tableData', (tableData) => {
+        const filePath = path.join(__tempdir, 'tableData.json');
+        fs.mkdir(__tempdir, { recursive: true }, (err) => {
+            if (err) { console.error('Erreur lors de la création du dossier temporaire :', err); return; }
+            fs.writeFile(filePath, JSON.stringify(tableData), (err) => {if (err) { console.error('Erreur lors de l\'écriture du fichier tableData.json :', err); }});
+        });
     });
 
     socket.emit("oldLog", logs);
