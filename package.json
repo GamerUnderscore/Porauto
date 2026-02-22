@@ -12,11 +12,14 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
     "serialport": "^13.0.0",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "electron": "40.1.0",
+    "electron": "^40.1.0",
     "electron-builder": "^26.7.0"
   },
   "build": {

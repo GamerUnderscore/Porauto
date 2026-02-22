@@ -1,4 +1,7 @@
 const container = document.querySelector('#table');
+let isAdminMode = function () {
+    return false
+}
 const contextMenuSettings = {
     callback(key, selection, clickEvent) {
         console.log(key, selection, clickEvent);
@@ -24,6 +27,21 @@ const contextMenuSettings = {
                 }, 1);
             },
         },
+        delete_row: {
+            name() {
+                return 'Supprimer';
+            },
+            hidden() {
+                return !isAdminMode();
+            },
+            callback() {
+                const row = this.getSelectedLast()[0];
+                //delete the row from the table
+                this.alter('remove_row', row);
+                sendTableDataToServer();
+            },
+        },
+
     },
 };
 const hot = new Handsontable(container, {
@@ -37,7 +55,7 @@ const hot = new Handsontable(container, {
     columns: [
         {
             data: 'id',
-            editor: false,
+            editor: 'text',
             readOnly: true,
         },
         {
@@ -87,7 +105,7 @@ const hot = new Handsontable(container, {
     licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
     contextMenu: contextMenuSettings,
     afterChange: function (changes, source) {
-        if (source === 'loadData' || !changes) return; // Ignore changes caused by loadData or if there are no changes
+        if (source === 'loadData' || !changes) return; 
         sendTableDataToServer();
     }
 });

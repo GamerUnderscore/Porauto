@@ -67,6 +67,11 @@
             </div>
 
             <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="ldroite-input" max="100" min="0">
+                <span class="input-group-text" id="basic-addon1">ldroite</span>
+            </div>
+
+            <div class="input-group mb-3">
                 <input type="number" class="form-control" placeholder="Length" aria-label="length" id="length-input" max="145" min="0">
                 <span class="input-group-text" id="basic-addon1">cm</span>
             </div>
@@ -127,9 +132,7 @@
                         ...
                     </button>
                     <ul class="dropdown-menu" id="arduino-ports-dropdown">
-                        <li><button class="dropdown-item" type="button">Action</button></li>
-                        <li><button class="dropdown-item" type="button">Another action</button></li>
-                        <li><button class="dropdown-item" type="button">Something else here</button></li>
+                        <li><button class="dropdown-item" type="button">Veuillez rafraîchir</button></li>
                     </ul>
                 </div>
             </div><br><br>
@@ -149,58 +152,40 @@
 
         
         <div class="tab-pane fade" id="v-pills-control" role="tabpanel" aria-labelledby="v-pills-control-tab" tabindex="0">
-                <div id="side" class="bs-secondary-color">
-                    <h3>Conteneurs</h3>
-                
-                    <div id="table"></div>
-                
-                    <h3 class="display-7">Actions générées</h3>
-                    <div id="actions"></div>
-                    <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
-                
-                    <div id="temp"></div>
-                
-                    
-                    <div class="tab-pane fade" id="v-pills-control" role="tabpanel" aria-labelledby="v-pills-control-tab" tabindex="0">
-                        <div id="side" class="bs-secondary-color">
-                            <h3>Conteneurs</h3>
-                
-                            <div id="table"></div>
-                
-                            <h3 class="display-7">Actions générées</h3>
-                            <div id="actions"></div>
-                            <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
-                
-                            
-                        </div>
-                    </div>
-        
-                </div>
-        </div>
+            <div id="side" class="bs-secondary-color">
+                <h3>Conteneurs</h3>
+            
+                <div id="table"></div>
+                <button class="btn btn-primary" id="btn-add-container">+</button>
 
+                <h3 class="display-7">Actions générées</h3>
+                <div id="actions"></div>
+                <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
+            
+                <div id="temp"></div>
+                
+                <div class="tab-pane fade" id="v-pills-control" role="tabpanel" aria-labelledby="v-pills-control-tab" tabindex="0">
+                    <div id="side" class="bs-secondary-color">
+                        <h3>Conteneurs</h3>
+            
+                        <div id="table"></div>
+            
+                        <h3 class="display-7">Actions générées</h3>
+                        <div id="actions"></div>
+                        <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
+            
+                        
+                    </div>
+                </div>
+
+
+                <button class="btn btn-primary" id="btn-superadmin">Passer en mode SuperAdmin</button>
 
     
-    </div>
- 
-
-
-    <!-- <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <img src="client/assets/icons/logo.svg" width="16" height="16" class="rounded me-2" alt="...">
-                <strong class="me-auto">Information</strong>
-                <small>maintenant</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Lancement de l'action en cours...
             </div>
         </div>
     </div>
-     -->
-
     <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
-
     <div class="modal fade" id="requestPosition" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -281,11 +266,92 @@
     <script src="client/scripts/libs/handstonable.js"></script>
     <script src="client/scripts/libs/popper.js"></script>
     <script src="client/scripts/libs/bootstrap.js"></script>
+    <script src="client/scripts/libs/bootstrap-autocomplete.js"></script>
+
 
     
     <script src="client/scripts/handstonable_cfg.js"></script>
     <script src="client/scripts/script.js"></script>
-<script src="client/scripts/schemas.js"></script>
+    <script src="client/scripts/schemas.js"></script>
+    <script src="client/scripts/bootstrap_functions.js"></script>
+
+
+
+    <!-- modal -->
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addContainerModal">
+        Launch demo modal
+    </button>
+    <div class="modal" id="addContainerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="acm_cp">Compagnie</span>
+                        <input type="text" class="form-control" placeholder="Compagnie" aria-label="Compagnie" aria-labelledby="acm_cp" id="acm_cp_i">                
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="acm_date_arrivee">Date d'arrivée</span>
+                        <input type="date" class="form-control" aria-labelledby="acm_date_arrivee" id="acm_date_arrivee_i">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="acm_date_depart">Date de départ</span>
+                        <input type="date" class="form-control" aria-labelledby="acm_date_depart" id="acm_date_depart_i">
+                    </div>
+                    <span class="input-group-text" id="acm_pos">Position</span>
+                    <div class="input-group mb-3">
+                        
+
+                        <div class="d-flex gap-1" style="width: 100%;">
+                            <div class="input-group mb-3">
+                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+                                    aria-expanded="false">X
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">A</a></li>
+                                    <li><a class="dropdown-item" href="#">B</a></li>
+                                    <li><a class="dropdown-item" href="#">C</a></li>
+                                    <li><a class="dropdown-item" href="#">D</a></li>
+                                </ul>
+
+                                <span class="input-group-text" id="acm_posX">A</span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+                                    aria-expanded="false">Y
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">1</a></li>
+                                    <li><a class="dropdown-item" href="#">2</a></li>
+                                    <li><a class="dropdown-item" href="#">3</a></li>
+                                    <li><a class="dropdown-item" href="#">4</a></li>
+                                </ul>
+                                <span class="input-group-text" id="acm_posY">1</span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <span style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none;" class="input-group-text" id="acm_description">Description</span>
+                        <input style="border-top-left-radius: 0; border-top-right-radius: 0;" type="text" class="form-control" aria-labelledby="acm_description" id="acm_description_i">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="acm_dest">Destination</span>
+                        <input type="text" class="form-control" aria-labelledby="acm_dest" id="acm_dest_i">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="acm_add_btn">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
 
 </body>
 

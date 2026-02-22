@@ -20,10 +20,49 @@ window.addEventListener('resize', () => {
 
 $('#anglez-input').on('input', function() {
     data.angleZ = -parseFloat($(this).val()) * Math.PI / 180;
+    console.log(data.angleZ)
 });
 $('#angle-input').on('input', function () {
     data.angle = parseFloat($(this).val()) * Math.PI / 180;
 });
+$('#ldroite-input').on('input', function () {
+    data.ldroite = $(this).val()
+
+
+    let Z = obtenirAngleBrasPourLigne(data.ldroite - 45) * Math.PI / 180;
+    
+    data.angleZ = -Z
+    console.log(Z)
+    data.angle = (parseFloat(-data.ldroite) + 45) * Math.PI / 180
+
+    $('#angle-input').val(parseFloat(-data.ldroite) + 45)
+    $('#anglez-input').val(obtenirAngleBrasPourLigne(data.ldroite - 45))
+
+});
+
+function obtenirAngleBrasPourLigne(angleBase) {
+    const rayonCercle = 125; // Car diamètre = 250
+    const distanceAuCote = rayonCercle * Math.cos(Math.PI / 4); // env. 88.39
+
+    // 1. Conversion de l'angle de la base en radians
+    const thetaRad = angleBase * (Math.PI / 180);
+
+    // 2. Calcul de la portée horizontale (r) nécessaire pour rester sur la ligne
+    const r = distanceAuCote / Math.cos(thetaRad);
+
+    // 3. Calcul de l'angle de levée (phi) pour obtenir cette portée r
+    // cos(phi) = r / rayonCercle
+    const ratio = r / rayonCercle;
+
+    // Sécurité pour éviter les erreurs d'arrondi (ne pas dépasser 1 ou -1)
+    const phiRad = Math.acos(Math.min(1, Math.max(-1, ratio)));
+
+    // 4. Retour en degrés
+    return phiRad * (180 / Math.PI);
+}
+
+
+
 $('#length-input').on('input', function() {data.length = parseFloat($(this).val()); });
 const ctx = canvas.getContext('2d');
 draw();
@@ -74,6 +113,9 @@ function draw() {
     drawText('X', vecX + 110, vecY + 5, 'red');
     drawLine(vecX, vecY, vecX, vecY - 100, 'green', 2);
     drawText('Z', vecX - 10, vecY - 110, 'green');
+
+    drawLine(centerX + 250 * Math.cos(Math.PI / 4), centerY + 250 * Math.sin(Math.PI / 4), centerX + 250 * Math.cos(-Math.PI / 4), centerY + 250 * Math.sin(-Math.PI / 4), 'white', 2);
+
 
 
 

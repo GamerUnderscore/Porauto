@@ -22,6 +22,7 @@ const offcanvasElementList = document.querySelectorAll('.offcanvas')
 const offcanvasList = [...offcanvasElementList].map(offcanvasEl => new bootstrap.Offcanvas(offcanvasEl))
 
 let communicationStatus = false;
+let superAdminMode = false;
 let port = {};
 let TEMP = [];
 let actionList = [];
@@ -318,6 +319,10 @@ window.addEventListener("load", (event) => {
         });
         fileInput.click();
     });
+
+    isAdminMode = function () {
+        return superAdminMode;
+    };
    
 });
 
@@ -425,3 +430,64 @@ function sendTableDataToServer() {
     const tableData = hot.getData();
     socket.emit("tableData", tableData);
 }
+
+$("#acm_cp_i").autocomplete({
+    source: function (request, response) {
+        const companies = [...new Set(hot.getData().map(row => row[3]).filter(c => c))];
+        const results = companies.filter(c => c.toLowerCase().includes(request.term.toLowerCase()));
+        response(results);
+    },
+    minLength: 0,
+    select: function (event, ui) {
+        $("#acm_cp_i").val(ui.item.value);
+        return false;
+    }
+});
+$("#acm_dest_i").autocomplete({
+    source: function (request, response) {
+        const destinations = [...new Set(hot.getData().map(row => row[6]).filter(d => d))];
+        const results = destinations.filter(d => d.toLowerCase().includes(request.term.toLowerCase()));
+        response(results);
+    },
+    minLength: 0,
+    select: function (event, ui) {
+        $("#acm_dest_i").val(ui.item.value);
+        return false;
+    }
+});
+$("#btn-add-container").click(() => {
+    hot.alter("insert_row_below");
+    const newRowIndex = hot.countRows() - 1;
+    hot.setDataAtCell(newRowIndex, 0, "a");
+
+
+    sendTableDataToServer();
+});
+$("#btn-superadmin").click(() => {
+    superAdminMode = !superAdminMode;
+    if (superAdminMode) {
+        //activer la modification de toutes les cellules
+        //hot.setCellMeta(1, 1, 'readOnly', false);
+        hot.updateSettings({
+            cells: function (row, col) {
+                const cellProperties = {};
+                cellProperties.readOnly = false;
+                return cellProperties;
+            }
+        });
+        showNotification("Mode SuperAdmin activé", "Le port est désormais vulnérable, faites attention !", "warning");
+    } else {
+        hot.updateSettings({
+            cells: function (row, col) {
+                const cellProperties = {};
+                if (col === 0 || col === 1 || col === 2) {
+                    cellProperties.readOnly = true;
+                } else {
+                    cellProperties.readOnly = false;
+                }
+                return cellProperties;
+            }
+        });
+        showNotification("Mode SuperAdmin désactivé", "Le port est désormais protégé contre les modifications manuelles", "success");
+    }
+});
