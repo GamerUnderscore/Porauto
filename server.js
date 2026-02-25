@@ -253,6 +253,7 @@ function startAutoDetection(callback) {
                     logToClient(`❌ Appareil débranché : ${path}`, 1);
 
                     knownPorts.delete(path);
+                    communicationStatus = false
                     io.emit("setCommunicationStatus", false);
                 }
             });
@@ -267,3 +268,9 @@ startAutoDetection((newPort) => {
     logToClient(`🔌 Nouveau port détecté : ${newPort}. Tentative de connexion...`, 0, true);
     setActivePort(newPort);
 });
+
+for(let i = 0; i > 10; i++) {
+    logToClient(`A`, 0, true);
+
+}
+

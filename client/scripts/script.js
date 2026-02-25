@@ -334,21 +334,34 @@ window.addEventListener("load", (event) => {
 // Partie log
 socket.on("log", (data) => {
     const logList = document.getElementById("logList");
+    const logList2 = document.getElementById("logList_2");
     const li = document.createElement("li");
     li.classList.add(levelString[data.level].toLowerCase());
-
     li.innerText = `[${levelString[data.level]}] ${data.message}`;
     logList.appendChild(li);
 
+    const li2 = document.createElement("li");
+    li2.classList.add(levelString[data.level].toLowerCase());
+    li2.innerText = `[${levelString[data.level]}] ${data.message}`;
+    logList2.appendChild(li2);
+    
     showNotification(levelString[data.level], data.message, levelNotificationType[data.level]);
 });
 socket.on("oldLog", (logs) => {
     const logList = document.getElementById("logList");
+    const logList2 = document.getElementById("logList_2");
+
     logs.forEach(data => {
         const li = document.createElement("li");
         li.classList.add(levelString[data.level].toLowerCase());
         li.innerText = `[${levelString[data.level]}] ${data.message}`;
         logList.appendChild(li);
+    });
+    logs.forEach(data => {
+        const li = document.createElement("li");
+        li.classList.add(levelString[data.level].toLowerCase());
+        li.innerText = `[${levelString[data.level]}] ${data.message}`;
+        logList2.appendChild(li);
     });
 });
 
@@ -429,6 +442,7 @@ socket.on('onStopArduino', () => {
 function sendTableDataToServer() {
     const tableData = hot.getData();
     socket.emit("tableData", tableData);
+    renderPort()
 }
 
 $("#acm_cp_i").autocomplete({
@@ -456,12 +470,12 @@ $("#acm_dest_i").autocomplete({
     }
 });
 $("#btn-add-container").click(() => {
+    const lastRowIndex = hot.countRows() - 1;
+    const lastRowData = hot.getDataAtRow(lastRowIndex);
+    const id = parseInt(lastRowData[0] || 0 )+ 1
     hot.alter("insert_row_below");
     const newRowIndex = hot.countRows() - 1;
-    hot.setDataAtCell(newRowIndex, 0, "a");
-
-
-    sendTableDataToServer();
+    hot.setDataAtCell(newRowIndex, 0, id);
 });
 $("#btn-superadmin").click(() => {
     superAdminMode = !superAdminMode;
@@ -475,7 +489,7 @@ $("#btn-superadmin").click(() => {
                 return cellProperties;
             }
         });
-        showNotification("Mode SuperAdmin activé", "Le port est désormais vulnérable, faites attention !", "warning");
+        showNotification("Mode SuperAdmin activé", "Attention!", "warning");
     } else {
         hot.updateSettings({
             cells: function (row, col) {
@@ -491,3 +505,15 @@ $("#btn-superadmin").click(() => {
         showNotification("Mode SuperAdmin désactivé", "Le port est désormais protégé contre les modifications manuelles", "success");
     }
 });
+$('#activateLogsBottom').on('click', function (event, state) { 
+    const value = event.target.checked
+
+    if (value) {
+        $("#logList_2").show()
+        $("#mainContent").css("height", "80%")
+    }else{
+        $("#logList_2").hide()
+        $("#mainContent").css("height", "100%")
+
+    }
+})

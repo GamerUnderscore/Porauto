@@ -14,23 +14,24 @@
 
 <body data-bs-theme="dark" >
 
-<div class="d-flex align-items-start" style="width: 100%;">
-    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+<div class="d-flex align-items-start" id="mainContent" style="width: 100%;">
+    <div class="nav flex-column nav-pills me-3" id="tab" role="tablist" aria-orientation="vertical">
         <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
             type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Contenneurs</button>
+        <button class="nav-link" id="v-pills-control-tab" data-bs-toggle="pill" data-bs-target="#v-pills-control" type="button"
+            role="tab" aria-controls="v-pills-control" aria-selected="false">Controller</button>
+
         <button class="nav-link" id="v-pills-visual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-visual" type="button"
-            role="tab" aria-controls="v-pills-visual" aria-selected="true">Visuel</button>
+            role="tab" aria-controls="v-pills-visual" style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="true">Visuel</button>
         <button class="nav-link" id="v-pills-manual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-manual"
-            type="button" role="tab" aria-controls="v-pills-manual" aria-selected="false">Gestion Manuelle</button>
-        <button class="nav-link" id="v-pills-control-tab" data-bs-toggle="pill" data-bs-target="#v-pills-control"
-            type="button" role="tab" aria-controls="v-pills-control" aria-selected="false">Controller</button>
+            type="button" role="tab" aria-controls="v-pills-manual" style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="false">Gestion Manuelle</button>
         <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
             type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Paramètres</button>
         <button class="nav-link" id="v-pills-logs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logs"
             type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false">Logs</button>
         <br>
         <div class="d-flex flex-column mb-3 align-items-center">
-            <div>Connection <div class="tinyCircle" id="communication-status"></div>
+            <div>Connection <div class="tinyCircle" id="communication-status"></div><br><br>
             <button type="button" class="btn btn-danger" id="btn-stop">Arrêt d'urgence</button>
         </div>
         
@@ -41,7 +42,14 @@
             tabindex="0">
             <div class="d-inline-flex gap-1">
                 <div id="main">
-                    <div id="port"></div>
+            
+                    <div id="port">
+                        <div class="alert alert-dark" role="alert">
+                            Chargement
+                        </div>   
+                    </div>
+                    <button type="button" class="btn btn-primary">Recharger</button>
+
                 </div>
             </div>
         </div>
@@ -113,7 +121,7 @@
                     </div>
                     <span class="input-group-text">0.0</span>
                 </div>
-            </div>
+            </div><br>
 
             <button type="button" class="btn btn-primary" onclick="sendTableDataToServer()">Envoyer les données au serveur</button>
         
@@ -137,6 +145,9 @@
                 </div>
             </div><br><br>
 
+            <h3>Données</h3>
+
+
             <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-import-data">
                 <img src="client/assets/icons/import.svg" alt="" style="filter: invert(1);">
                 Importer les données
@@ -147,7 +158,18 @@
                 Télécharger les données
             </button>
      
-        
+            <br><br>
+            <h3>Affichage</h3>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="activateLogsBottom">
+                <label class="form-check-label" for="switchCheckDefault">Afficher les logs en bas de l'écran</label>        
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                <label class="form-check-label" for="switchCheckDefault">Mode de présentation</label>
+            </div>
+
         </div>
 
         
@@ -164,21 +186,7 @@
             
                 <div id="temp"></div>
                 
-                <div class="tab-pane fade" id="v-pills-control" role="tabpanel" aria-labelledby="v-pills-control-tab" tabindex="0">
-                    <div id="side" class="bs-secondary-color">
-                        <h3>Conteneurs</h3>
-            
-                        <div id="table"></div>
-            
-                        <h3 class="display-7">Actions générées</h3>
-                        <div id="actions"></div>
-                        <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
-            
-                        
-                    </div>
-                </div>
-
-
+                
                 <button class="btn btn-primary" id="btn-superadmin">Passer en mode SuperAdmin</button>
 
     
@@ -260,6 +268,8 @@
             </div>
         </div>
     </div>
+</div>
+<ul id="logList_2"></ul>
 
     <script src="client/scripts/libs/socket.io.js"></script>
     <script src="client/scripts/libs/jquery.js"></script>
@@ -274,85 +284,6 @@
     <script src="client/scripts/script.js"></script>
     <script src="client/scripts/schemas.js"></script>
     <script src="client/scripts/bootstrap_functions.js"></script>
-
-
-
-    <!-- modal -->
-    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addContainerModal">
-        Launch demo modal
-    </button>
-    <div class="modal" id="addContainerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="acm_cp">Compagnie</span>
-                        <input type="text" class="form-control" placeholder="Compagnie" aria-label="Compagnie" aria-labelledby="acm_cp" id="acm_cp_i">                
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="acm_date_arrivee">Date d'arrivée</span>
-                        <input type="date" class="form-control" aria-labelledby="acm_date_arrivee" id="acm_date_arrivee_i">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="acm_date_depart">Date de départ</span>
-                        <input type="date" class="form-control" aria-labelledby="acm_date_depart" id="acm_date_depart_i">
-                    </div>
-                    <span class="input-group-text" id="acm_pos">Position</span>
-                    <div class="input-group mb-3">
-                        
-
-                        <div class="d-flex gap-1" style="width: 100%;">
-                            <div class="input-group mb-3">
-                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
-                                    aria-expanded="false">X
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">A</a></li>
-                                    <li><a class="dropdown-item" href="#">B</a></li>
-                                    <li><a class="dropdown-item" href="#">C</a></li>
-                                    <li><a class="dropdown-item" href="#">D</a></li>
-                                </ul>
-
-                                <span class="input-group-text" id="acm_posX">A</span>
-                            </div>
-                            <div class="input-group mb-3">
-                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
-                                    aria-expanded="false">Y
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">1</a></li>
-                                    <li><a class="dropdown-item" href="#">2</a></li>
-                                    <li><a class="dropdown-item" href="#">3</a></li>
-                                    <li><a class="dropdown-item" href="#">4</a></li>
-                                </ul>
-                                <span class="input-group-text" id="acm_posY">1</span>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <div class="list-group">
-                        <span style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none;" class="input-group-text" id="acm_description">Description</span>
-                        <input style="border-top-left-radius: 0; border-top-right-radius: 0;" type="text" class="form-control" aria-labelledby="acm_description" id="acm_description_i">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="acm_dest">Destination</span>
-                        <input type="text" class="form-control" aria-labelledby="acm_dest" id="acm_dest_i">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" id="acm_add_btn">Ajouter</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
 </body>
 
 </html>
