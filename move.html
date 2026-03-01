@@ -12,10 +12,11 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<body data-bs-theme="dark" >
+<body data-bs-theme="" >
 
 <div class="d-flex align-items-start" id="mainContent" style="width: 100%;">
     <div class="nav flex-column nav-pills me-3" id="tab" role="tablist" aria-orientation="vertical">
+        <img src="client/assets/icons/synapsis.svg" alt="" height="40em" style="border-radius: 0.6em;"><br>
         <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
             type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Contenneurs</button>
         <button class="nav-link" id="v-pills-control-tab" data-bs-toggle="pill" data-bs-target="#v-pills-control" type="button"
@@ -91,8 +92,8 @@
             tabindex="0">
         
 
-            <div class="card" >
-                <div id="arduino-cmd">
+            <div class="" >
+                <div class="card" id="arduino-cmd">
                 </div>
                 <div class="input-group mb-3" style="margin-bottom: 0 !important; border-bottom: none;">
                     <span class="input-group-text">$</span>
@@ -160,9 +161,20 @@
      
             <br><br>
             <h3>Affichage</h3>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="themeAuto">
+                <label class="form-check-label" for="themeAuto">
+                    Mode d'affichage automatique
+                </label>        
+            </div>
+            <div class="form-check form-switch" id="checkNight_div">
+                <input class="form-check-input" type="checkbox" role="switch" id="checkNight">
+                <label class="form-check-label" for="checkNight">Mode sombre</label>
+            </div>
+
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="activateLogsBottom">
-                <label class="form-check-label" for="switchCheckDefault">Afficher les logs en bas de l'écran</label>        
+                <label class="form-check-label" for="activateLogsBottom">Afficher les logs en bas de l'écran</label>        
             </div>
 
             <div class="form-check form-switch">

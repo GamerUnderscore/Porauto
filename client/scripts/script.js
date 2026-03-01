@@ -1,5 +1,6 @@
 // ----------------------
 // DONNÉES
+
 // ----------------------
 const socket = io();
 const columns = ["A", "B", "C", "D"];
@@ -51,7 +52,7 @@ function renderPort() {
         rows.forEach(r => {
             const key = `${c}${r}`;
             const cell = document.createElement("div");
-            cell.className = "cell card text-bg-dark mb-3";
+            cell.className = "cell card mb-3";
 
             const title = document.createElement("div");
             title.className = "card-header";
@@ -505,15 +506,153 @@ $("#btn-superadmin").click(() => {
         showNotification("Mode SuperAdmin désactivé", "Le port est désormais protégé contre les modifications manuelles", "success");
     }
 });
+
+
+
+
+// Settings
+var settingsOnLoad = true
+var settingsData = {
+    "logs_bottom":false,
+    "light_mode_auto": true,
+    "light_mode": false
+}
+socket.on('loadSettingsData', function (_data) {
+    settingsData = _data
+    console.log(_data)
+    $('#activateLogsBottom').prop("checked", !settingsData.logs_bottom)
+    $('#checkNight').prop("checked", !settingsData.light_mode)
+    $('#themeAuto').prop("checked", !settingsData.light_mode_auto)
+
+    $("#activateLogsBottom").trigger("click");
+    $("#checkNight").trigger("click");
+    $("#themeAuto").trigger("click");
+
+    if (settingsData.light_mode_auto) {
+        $('#checkNight_div').hide()
+    }
+
+    settingsOnLoad = false
+})
+function saveSettingsData() {
+    if (settingsOnLoad) return
+    settingsData = {
+        "logs_bottom": $('#activateLogsBottom')[0].checked,
+        "light_mode_auto": $('#themeAuto')[0].checked,
+        "light_mode": !$('#themeAuto')[0].checked && $('#checkNight')[0].checked
+    }
+
+    socket.emit('saveSettingsData', settingsData)
+}
 $('#activateLogsBottom').on('click', function (event, state) { 
     const value = event.target.checked
-
     if (value) {
         $("#logList_2").show()
         $("#mainContent").css("height", "80%")
     }else{
         $("#logList_2").hide()
         $("#mainContent").css("height", "100%")
+    }
+    saveSettingsData()
+})
+
+$('#checkNight').on('click', function (event, state) {
+    const value = event.target.checked
+    setTheme(value ? 'dark' : 'light')
+    saveSettingsData()
+})
+
+$('#themeAuto').on('click', function (event, state) {
+    const value = event.target.checked
+
+    if (!settingsOnLoad) {
+        if (value) {
+            $('#checkNight_div').hide()
+        }else{
+            $('#checkNight_div').show()
+            $('#checkNight').prop("checked", false)
+        }
+    
+        setTheme(getPreferredTheme())
+    }
+    saveSettingsData()
+})
+
+
+const getStoredTheme = () => localStorage.getItem('theme')
+const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+const getPreferredTheme = () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme) {
+        return storedTheme
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+const setTheme = theme => {
+    if (theme === 'auto') {
+        document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+        hot.useTheme('ht-theme-main-dark-auto')
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', theme)
+        if (theme === "dark") {
+            hot.useTheme("ht-theme-main-dark")
+        }else{
+            hot.useTheme("ht-theme-main")
+        }
 
     }
+}
+
+setTheme(getPreferredTheme())
+
+const showActiveTheme = (theme, focus = false) => {
+    const themeSwitcher = document.querySelector('#bd-theme')
+
+    if (!themeSwitcher) {
+        return
+    }
+
+    const themeSwitcherText = document.querySelector('#bd-theme-text')
+    const activeThemeIcon = document.querySelector('.theme-icon-active use')
+    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
+
+    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+        element.classList.remove('active')
+        element.setAttribute('aria-pressed', 'false')
+    })
+
+    btnToActive.classList.add('active')
+    btnToActive.setAttribute('aria-pressed', 'true')
+    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+
+    if (focus) {
+        themeSwitcher.focus()
+    }
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme !== 'light' && storedTheme !== 'dark') {
+        setTheme(getPreferredTheme())
+    }
+})
+
+window.addEventListener('DOMContentLoaded', () => {
+    showActiveTheme(getPreferredTheme())
+
+    document.querySelectorAll('[data-bs-theme-value]')
+        .forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const theme = toggle.getAttribute('data-bs-theme-value')
+                setStoredTheme(theme)
+                setTheme(theme)
+                showActiveTheme(theme, true)
+            })
+        })
 })
