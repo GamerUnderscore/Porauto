@@ -116,16 +116,21 @@ io.on('connection', (socket) => {
 
 
     //Settings
-    console.log("LOAD: ", JSON.parse(fs.readFileSync(path.join(__tempdir, 'settings.json'))))
     socket.emit('loadSettingsData', fs.existsSync(path.join(__tempdir, 'settings.json')) ? JSON.parse(fs.readFileSync(path.join(__tempdir, 'settings.json'))) : []);
-    socket.on('saveSettingsData', (_data) => {
-        console.log("SAVE: ",_data)
+    let isWritingSettings = false;
+
+    socket.on('saveSettingsData', async (_data) => {
+        if (isWritingSettings) return; // Ignore si déjà en cours
+        isWritingSettings = true;
         const filePath = path.join(__tempdir, 'settings.json');
         fs.mkdir(__tempdir, { recursive: true }, (err) => {
-            if (err) { console.error('Erreur lors de la création du dossier temporaire :', err); return; }
-            fs.writeFile(filePath, JSON.stringify(_data), (err) => { if (err) { console.error('Erreur lors de l\'écriture du fichier settings.json :', err); } });
+            if (err) { console.error('Erreur lors de la création du dossier temporaire :', err); isWritingSettings = false; return; }
+            fs.writeFile(filePath, JSON.stringify(_data), (err) => {
+                if (err) { console.error('Erreur lors de l\'écriture du fichier settings.json :', err); }
+                isWritingSettings = false;
+            });
         });
-    })
+    });
 });
 
 server.listen(PORT, HOST, () => {

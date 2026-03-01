@@ -377,6 +377,7 @@ socket.on("portsList", (ports) => {
 });
 socket.on("setCommunicationStatus", (status, noModal) => {
     communicationStatus = status;
+    $('#connectArduinoWarn')[status ? 'hide' : 'show']()
     const circleStatus = document.getElementById("communication-status");
     circleStatus.style.backgroundColor = status ? "#00ff0a" : "red";
     $('#arduino-cmd-input').prop('disabled', !status);
@@ -396,13 +397,15 @@ function setActivePort(path) {
 }
 
 socket.on("arduino-data", (data) => {
-    console.log("Donnée reçue de l'Arduino:", data);
     const logList = document.getElementById("arduino-cmd");
     const li = document.createElement("li");
     li.innerText = `[ARDUINO] ${data}`;
     logList.appendChild(li);
 });
+
+let dataLoaded = false
 socket.on('getTableData', (data) => {
+    if (dataLoaded) return
     const tableData = data.map(row => ({
         id: row[0],
         position: row[1],
@@ -415,12 +418,14 @@ socket.on('getTableData', (data) => {
         description: row[8],
     }));
     hot.loadData(tableData);
+    
     tableData.forEach(container => {
         if (container.position) {
             port[container.position].push(container);
         };
     });
     renderPort();
+    dataLoaded = true
 });
 
 var input = document.getElementById("arduino-cmd-input");
@@ -519,7 +524,6 @@ var settingsData = {
 }
 socket.on('loadSettingsData', function (_data) {
     settingsData = _data
-    console.log(_data)
     $('#activateLogsBottom').prop("checked", !settingsData.logs_bottom)
     $('#checkNight').prop("checked", !settingsData.light_mode)
     $('#themeAuto').prop("checked", !settingsData.light_mode_auto)

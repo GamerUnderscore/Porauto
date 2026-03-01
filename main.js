@@ -11,15 +11,15 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1000,
         height: 600,
-        icon: path.join(__dirname, 'favicon.ico'), // Utilisation du chemin reconstruit
+        icon: path.join(__dirname, 'favicon.icns'), // Utilisation du chemin reconstruit
         webPreferences: {
             // Utilise le chemin reconstruit ici
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false, // Sécurité : recommandé à false
-            contextIsolation: true  // Sécurité : recommandé à true
+            contextIsolation: true,  // Sécurité : recommandé à true
+            devTools: false
         }
     })
-
     win.removeMenu()
 
     // Petit délai ou gestion d'erreur pour laisser le temps au serveur de démarrer

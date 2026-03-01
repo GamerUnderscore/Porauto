@@ -9,12 +9,15 @@
 
     <meta charset="UTF-8">
     <title>Gestion Port - Conteneurs</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="client/assets/icons/synapsis_logo.svg">
 </head>
 
 <body data-bs-theme="" >
-
+    <div class="alert alert-warning" role="alert" id="connectArduinoWarn" style="display: none;">
+        Veuillez connecter Arduino à l'ordinateur !
+    </div>
 <div class="d-flex align-items-start" id="mainContent" style="width: 100%;">
+    
     <div class="nav flex-column nav-pills me-3" id="tab" role="tablist" aria-orientation="vertical">
         <img src="client/assets/icons/synapsis.svg" alt="" height="40em" style="border-radius: 0.6em;"><br>
         <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"

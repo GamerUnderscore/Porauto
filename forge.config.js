@@ -1,4 +1,7 @@
 module.exports = {
+    packagerConfig: {
+        icon: 'favicon.icns' // use .icns for macOS, .ico for Windows, ensure the file exists
+    },
     makers: [
         {
             name: '@electron-forge/maker-zip',

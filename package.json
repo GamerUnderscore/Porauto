@@ -12,6 +12,7 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "electron-icon-maker": "^0.0.5",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
     "path": "^0.12.7",
@@ -29,7 +30,13 @@
       "output": "dist"
     },
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "favicon.icO"
+    },
+    "mac": {
+      "icon": "favicon.icns",
+      "identity": "E73C9689DAB61B0F9A1A0C54B92A75F72C64FE66"
     }
+    
   }
 }
