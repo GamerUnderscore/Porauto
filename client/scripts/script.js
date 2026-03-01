@@ -197,8 +197,12 @@ function planMove2(containerId, target) {
         });
     });
 
+    $("#newActions").show()
     renderActions();
 }
+$('#greneratedActions-button').on('click', function() {
+    $("#newActions").hide()
+})
 
 // ----------------------
 // SIMULATION EXÉCUTION (temp)
@@ -341,10 +345,18 @@ socket.on("log", (data) => {
     li.innerText = `[${levelString[data.level]}] ${data.message}`;
     logList.appendChild(li);
 
+    const logList2Elem = $("#logList_2")[0];
+    const isScrolledToBottom = logList2Elem.scrollTop + logList2Elem.clientHeight >= logList2Elem.scrollHeight - 1;
+    
+
     const li2 = document.createElement("li");
     li2.classList.add(levelString[data.level].toLowerCase());
     li2.innerText = `[${levelString[data.level]}] ${data.message}`;
     logList2.appendChild(li2);
+
+    if (isScrolledToBottom) {
+        $("#logList_2").scrollTop(logList2Elem.scrollHeight);
+    }
     
     showNotification(levelString[data.level], data.message, levelNotificationType[data.level]);
 });
@@ -364,6 +376,11 @@ socket.on("oldLog", (logs) => {
         li.innerText = `[${levelString[data.level]}] ${data.message}`;
         logList2.appendChild(li);
     });
+    // Vérifie si #logList_2 est déjà scrollé tout en bas
+    
+
+    
+
 });
 
 // Autre
@@ -534,6 +551,7 @@ socket.on('loadSettingsData', function (_data) {
 
     if (settingsData.light_mode_auto) {
         $('#checkNight_div').hide()
+        setTheme("auto")
     }
 
     settingsOnLoad = false
@@ -551,11 +569,12 @@ function saveSettingsData() {
 $('#activateLogsBottom').on('click', function (event, state) { 
     const value = event.target.checked
     if (value) {
-        $("#logList_2").show()
-        $("#mainContent").css("height", "80%")
+        $("#logList_2_c").show()
+        $("#logList_2").scrollTop($("#logList_2")[0].scrollHeight);
+        $("body").css("height", "calc(100vh - 16px)")
     }else{
-        $("#logList_2").hide()
-        $("#mainContent").css("height", "100%")
+        $("#logList_2_c").hide()
+        $("body").css("height", "100%")
     }
     saveSettingsData()
 })
@@ -568,16 +587,19 @@ $('#checkNight').on('click', function (event, state) {
 
 $('#themeAuto').on('click', function (event, state) {
     const value = event.target.checked
-
+    console.log(value)
     if (!settingsOnLoad) {
         if (value) {
             $('#checkNight_div').hide()
+            setTheme("auto")
         }else{
             $('#checkNight_div').show()
             $('#checkNight').prop("checked", false)
+            setTheme("light")
+            console.log('a')
         }
     
-        setTheme(getPreferredTheme())
+        
     }
     saveSettingsData()
 })
@@ -610,36 +632,6 @@ const setTheme = theme => {
     }
 }
 
-setTheme(getPreferredTheme())
-
-const showActiveTheme = (theme, focus = false) => {
-    const themeSwitcher = document.querySelector('#bd-theme')
-
-    if (!themeSwitcher) {
-        return
-    }
-
-    const themeSwitcherText = document.querySelector('#bd-theme-text')
-    const activeThemeIcon = document.querySelector('.theme-icon-active use')
-    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
-
-    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-        element.classList.remove('active')
-        element.setAttribute('aria-pressed', 'false')
-    })
-
-    btnToActive.classList.add('active')
-    btnToActive.setAttribute('aria-pressed', 'true')
-    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
-    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
-    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
-
-    if (focus) {
-        themeSwitcher.focus()
-    }
-}
-
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     const storedTheme = getStoredTheme()
     if (storedTheme !== 'light' && storedTheme !== 'dark') {
@@ -647,16 +639,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
     }
 })
 
-window.addEventListener('DOMContentLoaded', () => {
-    showActiveTheme(getPreferredTheme())
 
-    document.querySelectorAll('[data-bs-theme-value]')
-        .forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const theme = toggle.getAttribute('data-bs-theme-value')
-                setStoredTheme(theme)
-                setTheme(theme)
-                showActiveTheme(theme, true)
-            })
-        })
+$('#closeArduioWarn').on('click', function() {
+    $('#connectArduinoWarn').hide()
 })
