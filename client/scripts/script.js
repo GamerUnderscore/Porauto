@@ -284,7 +284,6 @@ window.addEventListener("load", (event) => {
    ReloadPorts()
 
     $("#btn-download-data").click(() => {
-        alert('ok')
         const data = hot.getData();
         const csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
         const encodedUri = encodeURI(csvContent);
@@ -360,7 +359,11 @@ socket.on("log", (data) => {
     
     showNotification(levelString[data.level], data.message, levelNotificationType[data.level]);
 });
+
+let logsInLoad = 1
 socket.on("oldLog", (logs) => {
+    if (!logsInLoad) return
+    logsInLoad = null
     const logList = document.getElementById("logList");
     const logList2 = document.getElementById("logList_2");
 

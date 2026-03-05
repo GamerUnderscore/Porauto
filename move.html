@@ -12,316 +12,315 @@
     <link rel="icon" type="image/x-icon" href="client/assets/icons/synapsis_logo.svg">
 </head>
 
-<body data-bs-theme="" >
+<body data-bs-theme="">
     <div class="alert alert-warning" role="alert" id="connectArduinoWarn" style="display: none;">
         Veuillez connecter Arduino à l'ordinateur !
         <button type="button" class="btn-close" aria-label="Close" style="float: right;" id="closeArduioWarn"></button>
-
     </div>
-<div class="d-flex align-items-start" id="mainContent" style="width: 100%;">
-    
-    <div class="nav flex-column nav-pills me-3" id="tab" role="tablist" aria-orientation="vertical">
-        <img src="client/assets/icons/synapsis.svg" alt="" height="40em" style="border-radius: 0.6em;"><br>
-        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-            type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Contenneurs</button>
-        <button class="nav-link" id="v-pills-visual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-visual" type="button"
-            role="tab" aria-controls="v-pills-visual" style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="true">Visuel</button>
-        <button class="nav-link" id="v-pills-manual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-manual"
-            type="button" role="tab" aria-controls="v-pills-manual" style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="false">Gestion Manuelle</button>
-        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
-            type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Paramètres</button>
-        <button class="nav-link" id="v-pills-logs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logs"
-            type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false">Logs</button>
-        <br>
-        <div class="d-flex flex-column mb-3 align-items-center">
-            <div>Connection <div class="tinyCircle" id="communication-status"></div><br><br>
-            <button type="button" class="btn btn-danger" id="btn-stop">Arrêt d'urgence</button>
-        </div>
-        
-    </div>
-</div>
-    <div class="tab-content" id="v-pills-tabContent" style="width: 100%;">
-
-        <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab" tabindex="0">
-
-            <h3>Logs</h3>
-            <ul id="logList"></ul>
-         
-        </div>
-
-        <div class="tab-pane fade" id="v-pills-visual" role="tabpanel" aria-labelledby="v-pills-visual-tab" tabindex="0">
-
-            <div class="input-group mb-3">
-                <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="angle-input">
-                <span class="input-group-text" id="basic-addon1">(Y) °</span>
-            </div>
-
-
-            <div class="input-group mb-3">
-                <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="anglez-input" max="85" min="0">
-                <span class="input-group-text" id="basic-addon1">(Z) °</span>
-            </div>
-
-            <div class="input-group mb-3">
-                <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="ldroite-input" max="100" min="0">
-                <span class="input-group-text" id="basic-addon1">ldroite</span>
-            </div>
-
-            <div class="input-group mb-3">
-                <input type="number" class="form-control" placeholder="Length" aria-label="length" id="length-input" max="145" min="0">
-                <span class="input-group-text" id="basic-addon1">cm</span>
-            </div>
-
-            <canvas id="schemas-grue"></canvas> 
-        </div>
-
-        <div class="tab-pane fade" id="v-pills-manual" role="tabpanel" aria-labelledby="v-pills-manual-tab"
-            tabindex="0">
-        
-
-            <div class="" >
-                <div class="card" id="arduino-cmd">
-                </div>
-                <div class="input-group mb-3" style="margin-bottom: 0 !important; border-bottom: none;">
-                    <span class="input-group-text">$</span>
-                    <input type="text" class="form-control" placeholder="Commande Arduino" aria-label="Commande Arduino "
-                        aria-describedby="basic-addon1" id="arduino-cmd-input" >
-                </div>
-            </div>
-
+    <div class="d-flex align-items-start" id="mainContent" style="width: 100%;">
+        <div class="nav flex-column nav-pills me-3" id="tab" role="tablist" aria-orientation="vertical">
+            <img src="client/assets/icons/synapsis.svg" alt="" height="40em" style="border-radius: 0.6em;"><br>
+            <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
+                type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Contenneurs</button>
+            <button class="nav-link" id="v-pills-visual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-visual"
+                type="button" role="tab" aria-controls="v-pills-visual"
+                style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="true">Visuel</button>
+            <button class="nav-link" id="v-pills-manual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-manual"
+                type="button" role="tab" aria-controls="v-pills-manual"
+                style="--bs-nav-pills-link-active-bg: var(--bs-warning);" aria-selected="false">Gestion
+                Manuelle</button>
+            <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
+                type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Paramètres</button>
+            <button class="nav-link" id="v-pills-logs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logs"
+                type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false">Logs</button>
             <br>
-
-            <div class="list-group">
-                <div class="d-inline-flex gap-1">
-                    <span class="input-group-text">Moteur A</span>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-primary">+</button>
-                        <button type="button" class="btn btn-primary">-</button>
-                    </div>
-                    <span class="input-group-text">0.0</span>
+            <div class="d-flex flex-column mb-3 align-items-center">
+                <div>Connection <div class="tinyCircle" id="communication-status"></div><br><br>
+                    <button type="button" class="btn btn-danger" id="btn-stop">Arrêt d'urgence</button>
                 </div>
+            </div>
+        </div>
+        <div class="tab-content" id="v-pills-tabContent" style="width: 100%;">
+            <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab" tabindex="0">
+                <h3>Logs</h3>
+                <ul id="logList"></ul>
+            </div>
+            <div class="tab-pane fade" id="v-pills-visual" role="tabpanel" aria-labelledby="v-pills-visual-tab" tabindex="0">
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="angle-input">
+                    <span class="input-group-text" id="basic-addon1">(Y) °</span>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="anglez-input"
+                        max="85" min="0">
+                    <span class="input-group-text" id="basic-addon1">(Z) °</span>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" placeholder="Angle" aria-label="angle" id="ldroite-input"
+                        max="100" min="0">
+                    <span class="input-group-text" id="basic-addon1">ldroite</span>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" placeholder="Length" aria-label="length" id="length-input"
+                        max="145" min="0">
+                    <span class="input-group-text" id="basic-addon1">cm</span>
+                </div>
+                <canvas id="schemas-grue"></canvas>
+            </div>
+            <div class="tab-pane fade" id="v-pills-manual" role="tabpanel" aria-labelledby="v-pills-manual-tab" tabindex="0">
+                <div>
+                    <div class="card" id="arduino-cmd">
+                    </div>
+                    <div class="input-group mb-3" style="margin-bottom: 0 !important; border-bottom: none;">
+                        <span class="input-group-text">$</span>
+                        <input type="text" class="form-control" placeholder="Commande Arduino"
+                            aria-label="Commande Arduino " aria-describedby="basic-addon1" id="arduino-cmd-input">
+                    </div>
+                </div>
+
                 <br>
-                <div class="d-inline-flex gap-1">
-                    <span class="input-group-text">Moteur B</span>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-primary">+</button>
-                        <button type="button" class="btn btn-primary">-</button>
+
+                <div class="list-group">
+                    <div class="d-inline-flex gap-1">
+                        <span class="input-group-text">Moteur A</span>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-primary">+</button>
+                            <button type="button" class="btn btn-primary">-</button>
+                        </div>
+                        <span class="input-group-text">0.0</span>
                     </div>
-                    <span class="input-group-text">0.0</span>
+                    <br>
+                    <div class="d-inline-flex gap-1">
+                        <span class="input-group-text">Moteur B</span>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-primary">+</button>
+                            <button type="button" class="btn btn-primary">-</button>
+                        </div>
+                        <span class="input-group-text">0.0</span>
+                    </div>
+                </div><br>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab"
+                tabindex="0">
+
+
+                <h3>Port de communication</h3>
+
+                <div class="d-inline-flex gap-1">
+                    <button type="button" class="btn btn-primary" onclick="ReloadPorts()">Rafraichir
+                        connections</button>
+
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" id="arduino-port-selected">
+                            ...
+                        </button>
+                        <ul class="dropdown-menu" id="arduino-ports-dropdown">
+                            <li><button class="dropdown-item" type="button">Veuillez rafraîchir</button></li>
+                        </ul>
+                    </div>
+                </div><br><br>
+
+                <h3>Données</h3>
+
+
+                <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-import-data">
+                    <img src="client/assets/icons/import.svg" alt="" style="filter: invert(1);">
+                    Importer les données
+                </button>
+
+                <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-download-data">
+                    <img src="client/assets/icons/download.svg" alt="" style="filter: invert(1);">
+                    Télécharger les données
+                </button>
+
+                <br><br>
+                <h3>Affichage</h3>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="themeAuto">
+                    <label class="form-check-label" for="themeAuto">
+                        Mode d'affichage automatique
+                    </label>
                 </div>
-            </div><br>        
-        </div>
-
-        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">
-        
-
-            <h3>Port de communication</h3>
-
-            <div class="d-inline-flex gap-1">
-                <button type="button" class="btn btn-primary" onclick="ReloadPorts()">Rafraichir connections</button>
-
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="arduino-port-selected">
-                        ...
-                    </button>
-                    <ul class="dropdown-menu" id="arduino-ports-dropdown">
-                        <li><button class="dropdown-item" type="button">Veuillez rafraîchir</button></li>
-                    </ul>
+                <div class="form-check form-switch" id="checkNight_div">
+                    <input class="form-check-input" type="checkbox" role="switch" id="checkNight">
+                    <label class="form-check-label" for="checkNight">Mode sombre</label>
                 </div>
-            </div><br><br>
 
-            <h3>Données</h3>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="activateLogsBottom">
+                    <label class="form-check-label" for="activateLogsBottom">Afficher les logs en bas de l'écran</label>
+                </div>
 
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                    <label class="form-check-label" for="switchCheckDefault">Mode de présentation</label>
+                </div>
 
-            <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-import-data">
-                <img src="client/assets/icons/import.svg" alt="" style="filter: invert(1);">
-                Importer les données
-            </button>
-
-            <button type="button" class="btn btn-primary" aria-label="Mute" id="btn-download-data">
-                <img src="client/assets/icons/download.svg" alt="" style="filter: invert(1);">
-                Télécharger les données
-            </button>
-     
-            <br><br>
-            <h3>Affichage</h3>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="themeAuto">
-                <label class="form-check-label" for="themeAuto">
-                    Mode d'affichage automatique
-                </label>        
-            </div>
-            <div class="form-check form-switch" id="checkNight_div">
-                <input class="form-check-input" type="checkbox" role="switch" id="checkNight">
-                <label class="form-check-label" for="checkNight">Mode sombre</label>
             </div>
 
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="activateLogsBottom">
-                <label class="form-check-label" for="activateLogsBottom">Afficher les logs en bas de l'écran</label>        
-            </div>
 
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-                <label class="form-check-label" for="switchCheckDefault">Mode de présentation</label>
-            </div>
+            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab"
+                tabindex="0">
+                <div id="side" class="bs-secondary-color">
+                    <div class="accordion" id="accordionPanel">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#portvisual-collapse" aria-expanded="false"
+                                    aria-controls="portvisual-collapse">
+                                    Visuel 2D
+                                </button>
+                            </h2>
+                            <div id="portvisual-collapse" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <div class="d-inline-flex gap-1">
+                                        <div id="main">
 
-        </div>
-
-        
-        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
-            <div id="side" class="bs-secondary-color">
-                <div class="accordion" id="accordionPanel">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#portvisual-collapse"
-                                aria-expanded="false" aria-controls="portvisual-collapse">
-                                Visuel 2D
-                            </button>
-                        </h2>
-                        <div id="portvisual-collapse" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                <div class="d-inline-flex gap-1">
-                                    <div id="main">
-                                
-                                        <div id="port">
-                                            <div class="alert alert-dark" role="alert">
-                                                Chargement
+                                            <div id="port">
+                                                <div class="alert alert-dark" role="alert">
+                                                    Chargement
+                                                </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-primary">Recharger</button>
-                                
-                                    </div>              
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#table-collapse" aria-expanded="false"
+                                    aria-controls="table-collapse">
+                                    Conteneurs
+                                </button>
+                            </h2>
+                            <div id="table-collapse" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <div id="table"></div>
+                                    <button class="btn btn-primary" id="btn-add-container">+ Ajouter une ligne</button>
+                                    <button class="btn btn-primary" id="btn-superadmin">Passer en mode
+                                        SuperAdmin</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#greneratedActions-collapse" aria-expanded="false"
+                                    aria-controls="greneratedActions-collapse" id="greneratedActions-button">
+                                    Actions générées <span id="newActions" style="margin-left: 1em;"
+                                        class="badge rounded-pill text-bg-danger">Nouveau</span>
+                                </button>
+                            </h2>
+                            <div id="greneratedActions-collapse" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <div id="actions"></div>
+                                    <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer
+                                        l'action</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#table-collapse" aria-expanded="false"
-                                aria-controls="table-collapse">
-                                Conteneurs
-                            </button>
-                        </h2>
-                        <div id="table-collapse" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                <div id="table"></div>
-                                <button class="btn btn-primary" id="btn-add-container">+ Ajouter une ligne</button>
-                                <button class="btn btn-primary" id="btn-superadmin">Passer en mode SuperAdmin</button>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+        <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+        <div class="modal fade" id="requestPosition" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel">Nouvelle tâche</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#greneratedActions-collapse" aria-expanded="false"
-                                aria-controls="greneratedActions-collapse" id="greneratedActions-button">
-                                Actions générées <span id="newActions" style="margin-left: 1em;" class="badge rounded-pill text-bg-danger">Nouveau</span>
-                            </button>
-                        </h2>
-                        <div id="greneratedActions-collapse" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                <div id="actions"></div>
-                                <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
-                            </div>
-                        </div>
-                    </div>          
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
-    <div class="modal fade" id="requestPosition" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalLabel">Nouvelle tâche</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="input-group mb-3">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">Objet</button>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item request-drpdwn-btn" type="button" value="C1">C1</button>
-                                </li>
-                                <li><button class="dropdown-item request-drpdwn-btn" type="button" value="C2">C2</button>
-                                </li>
-                                <li><button class="dropdown-item request-drpdwn-btn" type="button" value="C3">C3</button>
-                                </li>
-                                <li><button class="dropdown-item request-drpdwn-btn" type="button" value="C4">C4</button>
-                                </li>
-                            </ul>
-                            <span type="text" class="form-control" disabled aria-label="Text input with dropdown button"
-                                id="r-drpdwn-info">C2</span>
-                        </div>
-    
-                        <div class="mb-3">
-                            <label class="col-form-label">Coordonées actuelles:</label>
+                    <div class="modal-body">
+                        <form>
                             <div class="input-group mb-3">
-    
-    
-                                <span class="input-group-text">X: </span>
-                                <span class="form-control" id="r-drpdwn-info-x"></span>
-                                <span class="input-group-text">Y: </span>
-                                <span class="form-control" id="r-drpdwn-info-y"></span>
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Objet</button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item request-drpdwn-btn" type="button"
+                                            value="C1">C1</button>
+                                    </li>
+                                    <li><button class="dropdown-item request-drpdwn-btn" type="button"
+                                            value="C2">C2</button>
+                                    </li>
+                                    <li><button class="dropdown-item request-drpdwn-btn" type="button"
+                                            value="C3">C3</button>
+                                    </li>
+                                    <li><button class="dropdown-item request-drpdwn-btn" type="button"
+                                            value="C4">C4</button>
+                                    </li>
+                                </ul>
+                                <span type="text" class="form-control" disabled
+                                    aria-label="Text input with dropdown button" id="r-drpdwn-info">C2</span>
                             </div>
-                        </div>
-    
-                        <div class="mb-3">
-                            <label class="col-form-label">Coordonées souhaitées:</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">X: </span>
-                                <input type="text" class="form-control r-i-letter" placeholder="(A / B / C/ D)">
-                                <span class="input-group-text">Y: </span>
-                                <input type="text" class="form-control r-i-number" placeholder="(1 / 2 / 3 / 4)">
+
+                            <div class="mb-3">
+                                <label class="col-form-label">Coordonées actuelles:</label>
+                                <div class="input-group mb-3">
+
+
+                                    <span class="input-group-text">X: </span>
+                                    <span class="form-control" id="r-drpdwn-info-x"></span>
+                                    <span class="input-group-text">Y: </span>
+                                    <span class="form-control" id="r-drpdwn-info-y"></span>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+
+                            <div class="mb-3">
+                                <label class="col-form-label">Coordonées souhaitées:</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">X: </span>
+                                    <input type="text" class="form-control r-i-letter" placeholder="(A / B / C/ D)">
+                                    <span class="input-group-text">Y: </span>
+                                    <input type="text" class="form-control r-i-number" placeholder="(1 / 2 / 3 / 4)">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" id="r-submit">Exécuter</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-primary" id="r-submit">Exécuter</button>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="arduinoPortModal" tabindex="-1" aria-labelledby="arduinoPortModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="arduinoPortModalLabel">Port Arduino détecté</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Communication établie avec la carte Arduino.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div class="modal fade" id="arduinoPortModal" tabindex="-1" aria-labelledby="arduinoPortModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="arduinoPortModalLabel">Port Arduino détecté</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Communication établie avec la carte Arduino.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
+    <div class="accordion" id="logList_2_c">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#logListPanel-collapse" aria-expanded="true" aria-controls="logListPanel-collapse">
+                    Logs
+                </button>
+            </h2>
+            <div id="logListPanel-collapse" class="accordion-collapse collapse">
+                <ul id="logList_2"></ul>
             </div>
         </div>
     </div>
-</div>
-
-<div class="accordion" id="logList_2_c">
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                data-bs-target="#logListPanel-collapse" aria-expanded="true"
-                aria-controls="logListPanel-collapse">
-                Logs
-            </button>
-        </h2>
-        <div id="logListPanel-collapse" class="accordion-collapse collapse">
-            <ul id="logList_2"></ul>
-        </div>
-    </div>
-</div>  
 
 
     <script src="client/scripts/libs/socket.io.js"></script>
@@ -332,7 +331,7 @@
     <script src="client/scripts/libs/bootstrap-autocomplete.js"></script>
 
 
-    
+
     <script src="client/scripts/handstonable_cfg.js"></script>
     <script src="client/scripts/script.js"></script>
     <script src="client/scripts/schemas.js"></script>
