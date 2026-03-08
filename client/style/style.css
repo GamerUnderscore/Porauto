@@ -43,6 +43,28 @@ body {
     background-color: rgb(87, 87, 255);
 
 }
+
+.loading-container {
+    position: fixed;
+    bottom: 20%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    width: 0;
+    height: 4vh;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border: 1px solid rgba(40, 38, 44, 0.281);
+    background-color: white;
+    border-radius: 2em;
+}
+#loading-bar {
+    width: 0;
+    height: inherit;
+    background-color: rgb(87, 87, 255);
+    animation: loading 3s linear forwards;
+    border-radius: 2em;
+}
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -251,6 +273,7 @@ header {
     width: 100%;
     text-align: left;
     perspective: 500px; 
+    opacity: 0;
 
 }
 

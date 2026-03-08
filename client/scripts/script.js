@@ -2,6 +2,8 @@
 // DONNÉES
 
 // ----------------------
+gsap.registerPlugin(SplitText);
+
 const socket = io();
 const columns = ["A", "B", "C", "D"];
 const rows = [1, 2, 3, 4];
@@ -36,8 +38,6 @@ function initPort() {
     });
 }
 initPort();
-
-
 
 // ----------------------
 // RENDU
@@ -332,12 +332,32 @@ window.addEventListener("load", (event) => {
 
     let tl = gsap.timeline();
     tl.to("#loading-logo", { duration: 1.5, rotation: 360, backgroundColor: "white", ease: "elastic" })
+
+        .to(".loading-container", { width: "25%", duration: 2, ease: "expo" }, 0)
+        .to("#loading-bar", { width: "100%", duration: 2, ease: "expo" }, 1)
+
         .to("#loading-bglogo", { duration: 1, left: '50%', ease: "expo" }, 1)
         .to(".loading-scrn", { duration: 1, top: '100%', ease: "expo" }, 2)
-        .to(".loading-scrn", { duration: 1, opacity:0, display:'none'})
+        .to(".loading-container", { top: '100%', duration: 0.2, ease: "expo" }, 2)
 
+        .to(".loading-scrn", { duration: 1, opacity: 0, display: 'none', onStart: function() {
 
-});
+            document.fonts.ready.then(() => {
+                gsap.set(".defilement-texte", { opacity: 1 });
+                let split = SplitText.create(".defilement-texte", { type: "words", aria: "hidden" });
+
+                gsap.from(split.words, {
+                    opacity: 0,
+                    duration: 5,
+                    ease: "sine.out",
+                    stagger: 0.1,
+                });
+            });
+        }})
+        
+
+    alert(GetURLParameter("m"))
+}); // end load
 
 
 
@@ -656,18 +676,4 @@ $('#closeArduioWarn').on('click', function() {
     $('#connectArduinoWarn').hide()
 })
 
-
-gsap.registerPlugin(SplitText);
-
-document.fonts.ready.then(() => {
-    gsap.set(".container", { opacity: 1 });
-    let split = SplitText.create(".defilement-texte", { type: "words", aria: "hidden" });
-
-    gsap.from(split.words, {
-        opacity: 0,
-        duration: 5,
-        ease: "sine.out",
-        stagger: 0.1,
-    });
-});
 
