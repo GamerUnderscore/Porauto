@@ -3,8 +3,46 @@ body {
     height: 100%;
     overflow: hidden;
 }
+.loading-scrn {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.loading-scrn #loading-logo {
+    font-size: 3em;
+    font-weight: bold;
+    background-color: currentColor;
+    margin-bottom: 20px;
+    width: 35vh;
+    height: 35vh;
+    mask-size: 35vh !important;
+    -webkit-mask: url("../assets/icons/synapsis_s.svg") no-repeat center;
+    mask: url("../assets/icons/synapsis_s.svg") no-repeat center;
+    z-index: 1;
+}
 
+.loading-scrn #loading-bglogo {
+    position: absolute;
+    width: 35vh;
+    height: 35vh;
+    border-radius: 8vh;
+    top: 50%;
+    right: 100%;
+    transform: translate(-50%, -52%);
+    z-index: 0;
+    font-size: 3em;
+    font-weight: bold;
+    background-color: rgb(87, 87, 255);
 
+}
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -46,12 +84,15 @@ header {
 }
 .cell{
     background-color: var(--bs-secondary-bg);
-    height: 8em;
+    height: 7.5em;
     width: 6.5em;
     margin-bottom: 0 !important;
 }
 .card-body {
     padding: 0.1em !important;
+}
+.card-header {
+    font-size: .8em;
 }
 
 #actions {
@@ -141,11 +182,80 @@ header {
     overflow-y: auto;
 }
 #v-pills-tabContent{
-    margin-left: 11em;
+    margin-left: 12em;
+    width: calc(100% - 12em);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
 }
+#v-pills-infos-tab{
+    background-color: transparent !important;
+}
+#v-pills-infos {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
 #tab{
     position: fixed;
+    min-width: 10em;
 }
 #newActions{
     display: none;
+}
+
+.nav-link{
+    padding-left: 0.5em;
+    padding-right: 1em;
+}
+.demo-container{
+    position: absolute;
+    bottom: 0;
+    width: 90px;
+    height: 110px;
+    background-color: red;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    border-radius: 1em;
+
+    
+}
+
+.pince{
+    position: absolute;
+    height: 100vh;
+    bottom: 120px;
+}
+.pince-1{
+    position: absolute;
+    width: 90px;
+    height: 10px;
+    background-color: red;
+    border-radius: 1em;
+    bottom: 0;
+}
+.pince-2{
+    position: absolute;
+    width: 10px;
+    height: 100vh;
+    background-color: red;
+    border-radius: 1em;
+    margin-left: 40px;
+}
+.defilement-texte {
+    color: var(--bs-light-rgb);
+    font-size: 25px;
+    box-sizing: border-box;
+    padding: 5%;
+    width: 100%;
+    text-align: left;
+    perspective: 500px; 
+
+}
+
+
+
+.defilement-texte .orange{
+    color: #ffaa00;
 }

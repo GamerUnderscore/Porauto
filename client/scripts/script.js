@@ -328,6 +328,15 @@ window.addEventListener("load", (event) => {
         return superAdminMode;
     };
    
+
+
+    let tl = gsap.timeline();
+    tl.to("#loading-logo", { duration: 1.5, rotation: 360, backgroundColor: "white", ease: "elastic" })
+        .to("#loading-bglogo", { duration: 1, left: '50%', ease: "expo" }, 1)
+        .to(".loading-scrn", { duration: 1, top: '100%', ease: "expo" }, 2)
+        .to(".loading-scrn", { duration: 1, opacity:0, display:'none'})
+
+
 });
 
 
@@ -646,3 +655,19 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 $('#closeArduioWarn').on('click', function() {
     $('#connectArduinoWarn').hide()
 })
+
+
+gsap.registerPlugin(SplitText);
+
+document.fonts.ready.then(() => {
+    gsap.set(".container", { opacity: 1 });
+    let split = SplitText.create(".defilement-texte", { type: "words", aria: "hidden" });
+
+    gsap.from(split.words, {
+        opacity: 0,
+        duration: 5,
+        ease: "sine.out",
+        stagger: 0.1,
+    });
+});
+

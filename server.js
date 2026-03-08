@@ -1,4 +1,5 @@
 import http from 'http';
+import https from 'https'
 import fs from 'fs'
 import path from 'path'
 import { Server } from 'socket.io';
@@ -7,13 +8,11 @@ import { ReadlineParser } from '@serialport/parser-readline';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+
+const version = "0.0.1"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-// fichier appdata pour windows / home directory pour linux et macos
 const __tempdir = path.join(process.platform === 'win32' ? process.env.APPDATA : process.env.HOME, 'porauto');
-
-
 const levelString = {
     0: "INFO",
     1: "WARN",
@@ -63,22 +62,14 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('Un utilisateur s\'est connecté:', socket.id);
-
     socket.emit('setCommunicationStatus', communicationStatus, true);
     socket.emit('getTableData', fs.existsSync(path.join(__tempdir, 'tableData.json')) ? JSON.parse(fs.readFileSync(path.join(__tempdir, 'tableData.json'))) : []);
-
-    socket.on('disconnect', () => {
-        console.log('Un utilisateur s\'est déconnecté:', socket.id);
-    });
-
     socket.on('getPorts', () => {
         SerialPort.list().then(newPorts => {
             ports = newPorts;
             socket.emit('portsList', ports);
         });
     });
-
     socket.on('setActivePort', (path) => {
         setActivePort(path);
     });
@@ -287,9 +278,3 @@ startAutoDetection((newPort) => {
     logToClient(`🔌 Nouveau port détecté : ${newPort}. Tentative de connexion...`, 0, true);
     setActivePort(newPort);
 });
-
-for(let i = 0; i > 10; i++) {
-    logToClient(`A`, 0, true);
-
-}
-

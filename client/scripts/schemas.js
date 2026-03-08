@@ -6,14 +6,14 @@ socket.on('data', (data) => {
     data = data;
 });
 const canvasSize = 1.2;
-canvas.width = window.innerWidth * canvasSize;
-canvas.height = window.innerHeight * canvasSize;
+canvas.width = 1485;
+canvas.height = 885;
 // on load
 window.addEventListener('resize', () => {
     // mettre a la taille le canvas
 
-    canvas.width = window.innerWidth * canvasSize;
-    canvas.height = window.innerHeight * canvasSize;
+    // canvas.width = $('#v-pills-tabContent').width() *canvasSize;
+    // canvas.height = canvas.width * (9/16);
     const ctx = canvas.getContext('2d');
 });
 

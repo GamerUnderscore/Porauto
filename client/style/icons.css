@@ -1,0 +1,35 @@
+.img-icon {
+    height: 1.5em;
+    width: 1.5em;
+    display: inline-block;
+    margin-right: 0.5em;
+    fill: pink;
+    vertical-align: middle;
+    margin-bottom: .1em;
+    float: left;
+}
+.i-box {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/box.svg") no-repeat center;
+    mask: url("../assets/icons/box.svg") no-repeat center;
+}
+.i-wrench {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/wrench.svg") no-repeat center;
+    mask: url("../assets/icons/wrench.svg") no-repeat center;
+}
+.i-settings {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/settings.svg") no-repeat center;
+    mask: url("../assets/icons/settings.svg") no-repeat center;
+}
+.i-logs {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/logs.svg") no-repeat center;
+    mask: url("../assets/icons/logs.svg") no-repeat center;
+}
+.i-twod {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/2d.svg") no-repeat center;
+    mask: url("../assets/icons/2d.svg") no-repeat center;
+}
