@@ -44,7 +44,14 @@
             <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
                 type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><div class="img-icon i-settings"></div>Paramètres</button>
             <button class="nav-link" id="v-pills-logs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logs"
-                type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false"><div class="img-icon i-logs"></div>Logs</button>
+                type="button" role="tab" aria-controls="v-pills-logs" aria-selected="false"><div class="img-icon i-logs"></div>
+                Logs
+            </button>
+            <button class="nav-link" id="v-pills-arduino-tab" data-bs-toggle="pill" data-bs-target="#v-pills-arduino" type="button"
+                role="tab" aria-controls="v-pills-arduino" aria-selected="false">
+                <div class="img-icon i-arduino"></div>
+                Arduino
+            </button>
             <br>
             <div class="d-flex flex-column mb-3 align-items-center">
                 <div>Connection <div class="tinyCircle" id="communication-status"></div><br><br>
@@ -66,6 +73,32 @@
                 </footer>
                 
 
+            </div>
+            <div class="tab-pane fade" id="v-pills-arduino" role="tabpanel" aria-labelledby="v-pills-arduino-tab"
+                tabindex="0">
+                <div style="display: flex;">
+                    <div class="card" style="width: 18rem;">
+                        <img src="client/assets/icons/arduino-2.svg" class="card-img-top" alt="arduino">
+                        <div class="card-body">
+                            <h5 class="card-title">Code arduino</h5>
+                            <p class="card-text">Vous pouvez télécharger ici le script à téléverser dans l'arduino</p>
+                            <a href="#" class="btn btn-primary">Télécharger</a>
+                            <a href="#" class="btn btn-primary">Copier</a>
+                    
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="width: 18rem; margin-left: 1em;">
+                    
+                        <div class="card-body">
+                            <h5 class="card-title">Communication avec arduino:</h5>
+                            <b class="card-text" id="arduino-com">Rompu.</b>
+                            <p class="card-text" id="arduino-com-hint">Assurez vous d'avoir bien branché la carte arduino à l'ordinateur, et
+                                d'avoir bien téléversé le code dans la carte. Note: Fermez le logiciel lorsque vous téléversez le programme
+                                dans la carte</p>
+                        </div>
+                        </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab" tabindex="0">
                 <h3>Logs</h3>
@@ -110,19 +143,27 @@
                     <div class="d-inline-flex gap-1">
                         <span class="input-group-text">Moteur A</span>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary">+</button>
-                            <button type="button" class="btn btn-primary">-</button>
+                            <button type="button" class="btn btn-primary" id="mA_plus">+</button>
+                            <button type="button" class="btn btn-primary" id="mA_minus">-</button>
                         </div>
-                        <span class="input-group-text">0.0</span>
+                        <span class="input-group-text" id="mA_angle">0.0</span>
                     </div>
                     <br>
                     <div class="d-inline-flex gap-1">
                         <span class="input-group-text">Moteur B</span>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary">+</button>
-                            <button type="button" class="btn btn-primary">-</button>
+                            <button type="button" class="btn btn-primary" id="mB_plus">+</button>
+                            <button type="button" class="btn btn-primary" id="mB_minus">-</button>
                         </div>
-                        <span class="input-group-text">0.0</span>
+                        <span class="input-group-text" id="mB_angle">0.0</span>
+                    </div>
+                    <div class="d-inline-flex gap-1">
+                        <span class="input-group-text">Moteur C</span>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-primary" id="mC_plus">+</button>
+                            <button type="button" class="btn btn-primary" id="mC_minus">-</button>
+                        </div>
+                        <span class="input-group-text" id="mC_angle">0.0</span>
                     </div>
                 </div><br>
             </div>

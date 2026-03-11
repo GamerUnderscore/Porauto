@@ -13,6 +13,11 @@
     -webkit-mask: url("../assets/icons/box.svg") no-repeat center;
     mask: url("../assets/icons/box.svg") no-repeat center;
 }
+.i-arduino {
+    background-color: currentColor;
+    -webkit-mask: url("../assets/icons/arduino.svg") no-repeat center;
+    mask: url("../assets/icons/arduino.svg") no-repeat center;
+}
 .i-wrench {
     background-color: currentColor;
     -webkit-mask: url("../assets/icons/wrench.svg") no-repeat center;

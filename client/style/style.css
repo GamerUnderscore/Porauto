@@ -110,10 +110,10 @@ header {
     width: 6.5em;
     margin-bottom: 0 !important;
 }
-.card-body {
+#card-c-body {
     padding: 0.1em !important;
 }
-.card-header {
+#card-c-header {
     font-size: .8em;
 }
 

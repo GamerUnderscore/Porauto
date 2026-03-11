@@ -56,11 +56,13 @@ function renderPort() {
 
             const title = document.createElement("div");
             title.className = "card-header";
+            title.id = "card-c-header"
             title.innerText = key;
             cell.appendChild(title);
 
             const body = document.createElement("div");
             body.className = "card-body";
+            body.id = "card-c-body"
             cell.appendChild(body);
 
             port[key].forEach(cont => {
@@ -428,6 +430,9 @@ socket.on("setCommunicationStatus", (status, noModal) => {
     communicationStatus = status;
     $('#connectArduinoWarn')[status ? 'hide' : 'show']()
     const circleStatus = document.getElementById("communication-status");
+    $("#arduino-com").html(status ? 'Établi.' : 'Rompu.')
+    $("#arduino-com-hint").html(status ? "" : "Assurez vous d'avoir bien branché la carte arduino à l'ordinateur, et d'avoir bien téléversé le code dans la carte. Note: Fermez le logiciel lorsque vous téléversez le programme dans la carte")
+
     circleStatus.style.backgroundColor = status ? "#00ff0a" : "red";
     $('#arduino-cmd-input').prop('disabled', !status);
     if (status && !noModal) {
@@ -677,3 +682,23 @@ $('#closeArduioWarn').on('click', function() {
 })
 
 
+// manual control
+
+$('#mA_plus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateX 10")
+})
+$('#mA_minus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateX -10")
+})
+$('#mB_plus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateY 10")
+})
+$('#mB_minus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateY -10")
+})
+$('#mC_plus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateZ 10")
+})
+$('#mC_minus').on('click', function () {
+    socket.emit('sendArduinoCommand', "rotateZ -10")
+})
