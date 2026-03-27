@@ -107,5 +107,6 @@ const hot = new Handsontable(container, {
     afterChange: function (changes, source) {
         if (source === 'loadData' || !changes) return; 
         sendTableDataToServer();
+        
     }
 });

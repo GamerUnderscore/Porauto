@@ -103,6 +103,7 @@ header {
 }
 #table{
     border-radius: 1em;
+    margin-bottom: 1em;
 }
 .cell{
     background-color: var(--bs-secondary-bg);
@@ -125,10 +126,7 @@ header {
     background-color: var(--bs-secondary-bg);
     border: var(--bs-border-color-translucent) 1px solid;
     border-radius: 1em;
-}
-
-#btn-start {
-    margin-top: 10px;
+    margin-bottom: 1em;
 }
 
 #logList {
@@ -152,7 +150,7 @@ header {
 }
 #arduino-cmd{
     background-color: var(--bs-body-bg);
-    color: white;
+    color: var(--bs-light-rgb);
     padding: 3px;
     margin: 2px 0;
     font-size: 12px;
@@ -176,7 +174,7 @@ header {
 }
 #schemas-grue{
     /* fit maximum content */
-    width: 80vw;
+    width: 50vw;
 
 }
 #logList_2{

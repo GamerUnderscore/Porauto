@@ -35,6 +35,11 @@ const mimeTypes = {
 };
 var logs = [];
 var communicationStatus = false;
+var motorsPositions = {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+}
 
 const server = http.createServer((req, res) => {
     let filePath = req.url === '/' ? '/move.html' : req.url;

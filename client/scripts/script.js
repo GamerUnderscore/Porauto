@@ -26,7 +26,7 @@ const offcanvasList = [...offcanvasElementList].map(offcanvasEl => new bootstrap
 
 let communicationStatus = false;
 let superAdminMode = false;
-let port = {};
+let port = [];
 let TEMP = [];
 let actionList = [];
 
@@ -45,8 +45,6 @@ initPort();
 function renderPort() {
     const portDiv = document.getElementById("port");
     portDiv.innerHTML = "";
-
-
 
     columns.forEach(c => {
         rows.forEach(r => {
@@ -87,17 +85,14 @@ function renderPort() {
 
 
 }
-
-function renderTemp() {
-    const tempDiv = document.getElementById("temp");
-    tempDiv.innerHTML = TEMP.map(c => c.id).join(", ");
-}
 function renderActions() {
     document.getElementById("actions").innerText =
         actionList.map(a => `${a.type} ${a.container} : ${a.from} → ${a.to}`).join("\n");
 }
+
 function findContainer(id) {
     for (let pos in port) {
+        console.log()
         const index = port[pos].findIndex(c => c.id === id);
         if (index !== -1) return { pos, index };
     }
@@ -165,7 +160,7 @@ function planMove2(containerId, target) {
     if (!port[target]) return alert("Position invalide");
 
     actionList = [];
-
+    containerId = parseInt(containerId)
     const found = findContainer(containerId);
     const stack = port[found.pos];
 
@@ -210,9 +205,8 @@ $('#greneratedActions-button').on('click', function() {
 // SIMULATION EXÉCUTION (temp)
 // ----------------------
 function executeActions() {
-
-    if (!communicationStatus) return showNotification("Erreur", "Impossible d'exécuter les actions : pas de communication avec l'Arduino", "danger");
     if (actionList.length === 0) return showNotification("Erreur", "Aucune action planifiée", "danger");
+    if (!communicationStatus) return showNotification("Erreur", "Impossible d'exécuter les actions : pas de communication avec l'Arduino", "danger");
     actionList.forEach(a => {
         if (a.from !== "TEMP") {
             const stack = port[a.from];
@@ -234,6 +228,10 @@ function executeActions() {
     actionList = [];
     renderAll();
 }
+$("#btn-resetActions").click(function() {
+    actionList = []
+    renderActions()
+})
 
 function showNotification(title, message, type = 'primary') {
     const container = document.getElementById('toastContainer');
@@ -274,7 +272,6 @@ function showNotification(title, message, type = 'primary') {
 // ----------------------
 function renderAll() {
     renderPort();
-    renderTemp();
     renderActions();
 }
 function ReloadPorts() { // COM
@@ -356,9 +353,6 @@ window.addEventListener("load", (event) => {
                 });
             });
         }})
-        
-
-    alert(GetURLParameter("m"))
 }); // end load
 
 
@@ -502,9 +496,33 @@ socket.on('onStopArduino', () => {
 function sendTableDataToServer() {
     const tableData = hot.getData();
     socket.emit("tableData", tableData);
+
+    updatePort()
+}
+function updatePort() {
+    initPort()
+    var tableData = hot.getData();
+
+    tableData = tableData.map(row => ({
+        id: row[0],
+        position: row[1],
+        hauteur: row[2],
+        company: row[3],
+        arrivalDate: row[4],
+        departureDate: row[5],
+        destination: row[6],
+        status: row[7],
+        description: row[8],
+    }));
+
+    tableData.forEach(container => {
+        console.log(container)
+        if (container.position) {
+            port[container.position].push(container);
+        };
+    });
     renderPort()
 }
-
 $("#acm_cp_i").autocomplete({
     source: function (request, response) {
         const companies = [...new Set(hot.getData().map(row => row[3]).filter(c => c))];
@@ -549,7 +567,7 @@ $("#btn-superadmin").click(() => {
                 return cellProperties;
             }
         });
-        showNotification("Mode SuperAdmin activé", "Attention!", "warning");
+        showNotification("Mode édition activé", "Attention!", "warning");
     } else {
         hot.updateSettings({
             cells: function (row, col) {
@@ -562,7 +580,7 @@ $("#btn-superadmin").click(() => {
                 return cellProperties;
             }
         });
-        showNotification("Mode SuperAdmin désactivé", "Le port est désormais protégé contre les modifications manuelles", "success");
+        showNotification("Mode édition désactivé", "Le port est désormais protégé contre les modifications manuelles", "success");
     }
 });
 
@@ -576,21 +594,26 @@ var settingsData = {
     "light_mode_auto": true,
     "light_mode": false
 }
+
+loaded = false
 socket.on('loadSettingsData', function (_data) {
-    settingsData = _data
-    $('#activateLogsBottom').prop("checked", !settingsData.logs_bottom)
-    $('#checkNight').prop("checked", !settingsData.light_mode)
-    $('#themeAuto').prop("checked", !settingsData.light_mode_auto)
 
-    $("#activateLogsBottom").trigger("click");
-    $("#checkNight").trigger("click");
-    $("#themeAuto").trigger("click");
+    if (!loaded) {
+        settingsData = _data
+        $('#activateLogsBottom').prop("checked", !settingsData.logs_bottom)
+        $('#checkNight').prop("checked", !settingsData.light_mode)
+        $('#themeAuto').prop("checked", !settingsData.light_mode_auto)
 
-    if (settingsData.light_mode_auto) {
-        $('#checkNight_div').hide()
-        setTheme("auto")
+        $("#activateLogsBottom").trigger("click");
+        $("#checkNight").trigger("click");
+        $("#themeAuto").trigger("click");
+
+        if (settingsData.light_mode_auto) {
+            $('#checkNight_div').hide()
+            setTheme("auto")
+        }
     }
-
+    loaded = true
     settingsOnLoad = false
 })
 function saveSettingsData() {
@@ -701,4 +724,13 @@ $('#mC_plus').on('click', function () {
 })
 $('#mC_minus').on('click', function () {
     socket.emit('sendArduinoCommand', "rotateZ -10")
+})
+
+var motorsPositions = {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+}
+socket.on("heartbreath", function(data) {
+    motorsPositions = data.motorsPositions
 })

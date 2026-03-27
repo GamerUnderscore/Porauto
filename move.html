@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <link href="client/style/bootstrap.css" rel="stylesheet">
-    <link href="client/style/style.css" rel="stylesheet">
-    <link href="client/style/handstonable.css" rel="stylesheet">
-    <link href="client/style/handstonable-t.css" rel="stylesheet">
-    <link href="client/style/icons.css" rel="stylesheet">
-
-    <meta charset="UTF-8">
-    <title>Gestion Port - Conteneurs</title>
-    <link rel="icon" type="image/x-icon" href="client/assets/icons/synapsis_logo.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-</head>
+    <head>
+        <link href="client/style/bootstrap.css" rel="stylesheet">
+        <link href="client/style/style.css" rel="stylesheet">
+        <link href="client/style/handstonable.css" rel="stylesheet">
+        <link href="client/style/handstonable-t.css" rel="stylesheet">
+        <link href="client/style/icons.css" rel="stylesheet">
+        <meta charset="UTF-8">
+        <title>Gestion Port - Conteneurs</title>
+        <link rel="icon" type="image/x-icon" href="client/assets/icons/synapsis_logo.svg">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    </head>
 
 <body data-bs-theme="">
-    <div class="loading-scrn">
+    <!-- <div class="loading-scrn">
         <div id="loading-logo"></div>
         <div id="loading-bglogo"></div>
         <div class="loading-container">
             <div id="loading-bar"></div>  
         </div>
-    </div>
+    </div> 
+    Pour dev plus tranquillement
+    -->
 
     <div class="alert alert-warning" role="alert" id="connectArduinoWarn" style="display: none;">
         Veuillez connecter Arduino à l'ordinateur !
@@ -71,8 +71,6 @@
                     Ce logiciel a été développé dans le cadre d'un cursus scolaire pour illustrer la gestion automatisée des flux
                     portuaires. Les données et simulations présentées sont utilisées à des fins éducatives uniquement.
                 </footer>
-                
-
             </div>
             <div class="tab-pane fade" id="v-pills-arduino" role="tabpanel" aria-labelledby="v-pills-arduino-tab"
                 tabindex="0">
@@ -82,14 +80,12 @@
                         <div class="card-body">
                             <h5 class="card-title">Code arduino</h5>
                             <p class="card-text">Vous pouvez télécharger ici le script à téléverser dans l'arduino</p>
-                            <a href="#" class="btn btn-primary">Télécharger</a>
-                            <a href="#" class="btn btn-primary">Copier</a>
+                            <a href="client/scripts/arduino.ino" class="btn btn-primary" id="arduino-download">Télécharger</a>
                     
                         </div>
                     </div>
                     
                     <div class="card" style="width: 18rem; margin-left: 1em;">
-                    
                         <div class="card-body">
                             <h5 class="card-title">Communication avec arduino:</h5>
                             <b class="card-text" id="arduino-com">Rompu.</b>
@@ -97,7 +93,7 @@
                                 d'avoir bien téléversé le code dans la carte. Note: Fermez le logiciel lorsque vous téléversez le programme
                                 dans la carte</p>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab" tabindex="0">
@@ -156,7 +152,7 @@
                             <button type="button" class="btn btn-primary" id="mB_minus">-</button>
                         </div>
                         <span class="input-group-text" id="mB_angle">0.0</span>
-                    </div>
+                    </div><br>
                     <div class="d-inline-flex gap-1">
                         <span class="input-group-text">Moteur C</span>
                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -222,7 +218,7 @@
 
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-                    <label class="form-check-label" for="switchCheckDefault">Mode de présentation</label>
+                    <label class="form-check-label" for="switchCheckDefault" id="demoMode">Mode de présentation</label>
                 </div>
 
             </div>
@@ -267,8 +263,7 @@
                                 <div class="accordion-body">
                                     <div id="table"></div>
                                     <button class="btn btn-primary" id="btn-add-container">+ Ajouter une ligne</button>
-                                    <button class="btn btn-primary" id="btn-superadmin">Passer en mode
-                                        SuperAdmin</button>
+                                    <button class="btn btn-primary" id="btn-superadmin">Editer</button>
                                 </div>
                             </div>
                         </div>
@@ -284,8 +279,8 @@
                             <div id="greneratedActions-collapse" class="accordion-collapse collapse">
                                 <div class="accordion-body">
                                     <div id="actions"></div>
-                                    <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer
-                                        l'action</button>
+                                    <button class="btn btn-primary" id="btn-start" onclick="executeActions()">Lancer l'action</button>
+                                    <button class="btn btn-danger" id="btn-resetActions">Supprimer</button>
                                 </div>
                             </div>
                         </div>
@@ -398,8 +393,6 @@
     <script src="client/scripts/libs/popper.js"></script>
     <script src="client/scripts/libs/bootstrap.js"></script>
     <script src="client/scripts/libs/bootstrap-autocomplete.js"></script>
-
-
 
     <script src="client/scripts/handstonable_cfg.js"></script>
     <script src="client/scripts/script.js"></script>

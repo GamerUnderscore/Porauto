@@ -6,8 +6,8 @@ socket.on('data', (data) => {
     data = data;
 });
 const canvasSize = 1.2;
-canvas.width = 1485;
-canvas.height = 885;
+canvas.width = 1200;
+canvas.height = 700;
 // on load
 window.addEventListener('resize', () => {
     // mettre a la taille le canvas
@@ -85,17 +85,14 @@ function draw() {
     ctx.stroke();
 
 
-
+    //cercle vue dessus
     ctx.beginPath();
     ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
     ctx.strokeStyle = 'orange';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
-
-
-
-    // dessiner une ligne du centre du canvas vers le rayons du cercle en fonction de data.angle
+    // fleche vue dessus
     const angle = data.angle || 0;
     const x = (centerX + 250 * Math.cos(angle) * Math.cos(-data.angleZ || 0))
     const y = (centerY + 250 * Math.sin(angle) * Math.cos(-data.angleZ || 0));
@@ -103,9 +100,8 @@ function draw() {
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(x, y);
     ctx.strokeStyle = 'orange';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.stroke();
-
 
     var vecX = centerX - 300;
     var vecY = centerY + 300;
@@ -123,39 +119,34 @@ function draw() {
     // SHEMAS VUE DE COTE
     centerX = canvas.width / 2 + 250;
 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(centerX - 25, centerY - 100, 10, 300);
+    drawRect(centerX - 25, centerY - 100, 10, 300, 'wheat')
 
-    ctx.beginPath();
-    ctx.moveTo(centerX - 20, centerY - 80);
     const x2 = centerX - 20 + Math.abs(300 * Math.cos(data.angleZ || 0));
     const y2 = centerY - 80 + (300 * Math.sin(data.angleZ || 0));
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = 'orange';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    drawLine(centerX - 20, centerY - 80, x2, y2, 'orange', 2);
+
 
 
     const length = data.length / 70 * 280 || 0;
     // ligne de longueur du cable
-    drawLine(x2, y2, x2, y2 + length, 'white', 2);
+    drawLine(x2, y2, x2, y2 + length, 'blue', 2);
 
     //Ligne verticale de 200cm en blanc au centre du canvas
-    drawLine(centerX - 25, centerY + 200, centerX + 300, centerY + 200, 'white', 1);
+    drawLine(centerX - 25, centerY + 200, centerX + 300, centerY + 200, 'blue', 1);
 
 
     //ecrire la longueur de la ligne en orange en bas du canvas
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'blue';
     ctx.font = '20px Arial';
     ctx.fillText('80cm', centerX + 285, centerY + 220);
 
 
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'blue';
     ctx.font = '15px Arial';
     ctx.fillText(Math.abs(Math.floor(Math.cos(data.angleZ || 0) * 80)) +'cm', x2, centerY + 180);
 
 
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'blue';
     ctx.font = '15px Arial';
     ctx.fillText((data.length || 0) + 'cm', x2, y2 + length + 10);
 
@@ -178,5 +169,9 @@ function drawLine(x1, y1, x2, y2, color, lineWidth) {
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
     ctx.stroke();
+}
+function drawRect(x1, y1, x2, y2, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x1, y1, x2, y2);
 }
 function drawText(text, x, y, color, font) {ctx.fillStyle = color || "white"; ctx.font = font || "15px Arial"; ctx.fillText(text, x, y); }
