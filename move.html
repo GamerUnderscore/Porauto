@@ -13,15 +13,14 @@
     </head>
 
 <body data-bs-theme="">
-    <!-- <div class="loading-scrn">
+    <div class="loading-scrn">
         <div id="loading-logo"></div>
         <div id="loading-bglogo"></div>
         <div class="loading-container">
             <div id="loading-bar"></div>  
         </div>
     </div> 
-    Pour dev plus tranquillement
-    -->
+
 
     <div class="alert alert-warning" role="alert" id="connectArduinoWarn" style="display: none;">
         Veuillez connecter Arduino à l'ordinateur !
@@ -61,6 +60,7 @@
         </div>
         <div class="tab-content" id="v-pills-tabContent">
             <div class="tab-pane fade show active" id="v-pills-infos" role="tabpanel" aria-labelledby="v-pills-infos-tab" tabindex="0">
+                
                 <div class="defilement-texte" aria-hidden="true">
                     La synapse est une <span class="orange">zone de contact</span> fonctionnelle qui s'établit entre deux neurones, ou entre un neurone et une autre
                     cellule. Elle assure la conversion d'un potentiel d'action déclenché dans le neurone présynaptique en un signal dans la
@@ -139,7 +139,7 @@
                     <div class="d-inline-flex gap-1">
                         <span class="input-group-text">Moteur A</span>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary" id="mA_plus">+</button>
+                            <button type="button" class="btn btn-primary" id="mA_plus" >+</button>
                             <button type="button" class="btn btn-primary" id="mA_minus">-</button>
                         </div>
                         <span class="input-group-text" id="mA_angle">0.0</span>

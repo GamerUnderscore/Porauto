@@ -67,6 +67,10 @@ function renderPort() {
                 const div = document.createElement("div");
                 div.className = "container";
                 div.innerText = cont.id;
+                div.setAttribute("data-bs-toggle", "tooltip");
+                div.setAttribute("data-bs-placement", "top");
+                div.setAttribute("data-bs-title", `Compagnie: ${cont.company}\n\nDescription: ${cont.description}`);
+
                 body.appendChild(div);
             });
 
@@ -82,6 +86,9 @@ function renderPort() {
             inputField.innerText = button.value;
         });
     });
+    //TOOLTIPS
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 
 }
@@ -734,3 +741,4 @@ var motorsPositions = {
 socket.on("heartbreath", function(data) {
     motorsPositions = data.motorsPositions
 })
+

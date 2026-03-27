@@ -1,6 +1,7 @@
 #include <AccelStepper.h>
 const String CMD_PING = "PING";
 const String CMD_STATUS = "STATUS";
+const String CMD_RESET = "RESET";
 
 
 // Définition des pins du CNC Shield pour l'axe X
@@ -49,7 +50,10 @@ void setup() {
   // Réglages de mouvement
   moteurX.setMaxSpeed(10000);
   moteurX.setAcceleration(10000);
-
+  moteurY.setMaxSpeed(10000);
+  moteurY.setAcceleration(10000);
+  moteurZ.setMaxSpeed(10000);
+  moteurZ.setAcceleration(10000);
 
   Serial.println("READY");
 }
@@ -63,38 +67,40 @@ void loop() {
 
 
     if (message == CMD_PING) {
-      // Réponse pour le test de connexion
       Serial.println("PONG");
     }
-   
     else if (message == CMD_STATUS) {
-      // Exemple : On pourrait renvoyer l'état d'une pin ou d'un capteur
       Serial.println("SYSTEM_OK");
     }
-   
-
-
-
-
-    if (message == "ok") {
+    if (message == "90") {
       Serial.println("Commande recue : Rotation de 90 degres...");
-      // move() ajoute 1600 pas à la position actuelle
       moteurX.move(angle90);
+    }
+
+    //concret
+    if (message == CMD_RESET) {
+      moteurX.setMaxSpeed(500);
+      moteurX.move("64000");
+      Serial.println("RESPONSE_RESET");
+      moteurX.setMaxSpeed(10000);
     }
     if (message.startsWith("rotateX ")) {
       String valeurStr = message.substring(7);
       long pas = valeurStr.toInt();
       moteurX.move(pas);
+      Serial.println("RESPONSE_MX_"+pas);
     }
-        if (message.startsWith("rotateY ")) {
+    if (message.startsWith("rotateY ")) {
       String valeurStr = message.substring(7);
       long pas = valeurStr.toInt();
       moteurY.move(pas);
+      Serial.println("RESPONSE_MY_"+pas);
     }
-        if (message.startsWith("rotateY ")) {
+    if (message.startsWith("rotateZ ")) {
       String valeurStr = message.substring(7);
       long pas = valeurStr.toInt();
-      moteurY.move(pas);
+      moteurZ.move(pas);
+      Serial.println("RESPONSE_MZ_"+pas);
     }
   }
   moteurX.run();
