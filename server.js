@@ -210,7 +210,6 @@ async function setActivePort(path) {
 
         // 5. Gestion des données reçues
         activeParser.on('data', (data) => {
-            
             if (data.trim() === "READY") {
                 activePort.write('PING\n', (err) => {
                     if (err) {
@@ -222,11 +221,14 @@ async function setActivePort(path) {
                 logToClient(`✅ Communication avec ${path} établie !`, 3);
                 io.emit("setCommunicationStatus", true);
                 communicationStatus = true;
+            } else if (data.trim().startsWith("r")) {
+                const steps = data.trim().split("_")[1];
+                io.emit("motorCallback", { motor: data.trim()[1], steps: steps });
+                io.emit("arduino-data", "Rotation du moteur " + data.trim()[1] + ',de ' + steps + " pas.");
+
             } else {
                 io.emit("arduino-data", data);
             }
-            // Ici, tu peux envoyer la donnée vers Handsontable via IPC
-            // win.webContents.send('serial-data', data);
         });
 
         // 6. Gestion des erreurs imprévues (débranchement, etc.)
