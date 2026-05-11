@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
             });
         }
     });
-    ocket.on('resetMotors', () => {
+    socket.on('resetMotors', () => {
         if (activePort && activePort.isOpen) {
             activePort.write('RESET\n', (err) => {
                 if (err) {
@@ -232,11 +232,22 @@ async function setActivePort(path) {
                 logToClient(`✅ Communication avec ${path} établie !`, 3);
                 io.emit("setCommunicationStatus", true);
                 communicationStatus = true;
-            } else if (data.trim().startsWith("r")) {
-                const steps = data.trim().split("_")[1];
-                io.emit("arduino-data", "Rotation du moteur " + data.trim()[1] + ',de ' + steps + " pas.");
+            } else if (data.trim().startsWith("response_")) {
+                const dir = data.trim().split("_")[1];
+                const steps = data.trim().split("_")[2];
 
-                motorsPositions[data.trim()[1]] = motorsPositions[data.trim()[1]] + parseInt(steps)
+                motorsPositions[dir] = motorsPositions[dir] + parseInt(steps)
+                io.emit("motorCallback", motorsPositions);
+            }else if (data.trim().startsWith("POS_")) {
+                // structure : POS_XXXX_YYYYYYY_ZZZZZZZ
+
+                const posx = parseInt(data.trim().split("_")[1]);
+                const posy = parseInt(data.trim().split("_")[2]);
+                const posz = parseInt(data.trim().split("_")[3]);
+
+                motorsPositions.X = posx;
+                motorsPositions.Y = posy;
+                motorsPositions.Z = posz;
                 io.emit("motorCallback", motorsPositions);
             } else {
                 io.emit("arduino-data", data);

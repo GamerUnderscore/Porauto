@@ -99,7 +99,7 @@ function renderActions() {
 
 function findContainer(id) {
     for (let pos in port) {
-        console.log()
+        console.log("")
         const index = port[pos].findIndex(c => c.id === id);
         if (index !== -1) return { pos, index };
     }
@@ -483,10 +483,55 @@ socket.on('getTableData', (data) => {
     dataLoaded = true
 });
 
+var firstMotorData = true
 socket.on("motorCallback", function(data) {
-    $("#mA_angle").html(data.X)
-    $("#mB_angle").html(data.Y)
-    $("#mC_angle").html(data.Z)
+    console.log(data)
+
+    if (firstMotorData) {
+        $("#mA_angle").html(data.X)
+        setAngleX(data.X/45120*360)
+        $("#mB_angle").html(data.Y)
+        var l = 2*Math.PI*4*(data.Y/3200)
+        setLength(l)
+        $("#mC_angle").html(data.Z)
+        setAngleZ(data.Z/32000*360)
+        firstMotorData = false
+        return
+    }
+
+    simulateAccelStepper(
+        parseInt($("#mA_angle").html()),
+        data.X,
+        2000,
+        1000,
+        (v) => {
+            $("#mA_angle").html(v)
+            setAngleX(v/45120*360)
+        }
+    );
+    simulateAccelStepper(
+        parseInt($("#mB_angle").html()),
+        data.Y,
+        2000,
+        1000,
+        (v) => {
+            $("#mB_angle").html(v)
+            setLength(2*Math.PI*4*(v/3200))
+        }
+    );
+    simulateAccelStepper(
+        parseInt($("#mC_angle").html()),
+        data.Z,
+        1500,
+        500,
+        (v) => {
+            $("#mC_angle").html(v)
+            setAngleZ(v/32000*360)
+        }
+    );
+    // $("#mA_angle").html(data.X / 45120)
+    // $("#mB_angle").html(data.Y / 3200)
+    // $("#mC_angle").html(data.Z / 32000)
 
 })
 
@@ -776,4 +821,93 @@ function treatAction(action) {
     if (action.type == "MOVE") {
         const pos = findContainer(action.container)
     }
+}
+
+/**
+ * Anime une valeur pour simuler le comportement de la librairie AccelStepper.
+ * * @param {number} startPos - La position de départ (en pas ou coordonnées)
+ * @param {number} targetPos - La position cible
+ * @param {number} maxSpeed - La vitesse maximale (pas/seconde)
+ * @param {number} accel - L'accélération/décélération (pas/seconde²)
+ * @param {function} onUpdate - Callback appelé à chaque frame avec la nouvelle valeur
+ * @param {function} onComplete - Callback optionnel appelé à la fin du mouvement
+ */
+function simulateAccelStepper(startPos, targetPos, maxSpeed, accel, onUpdate, onComplete) {
+    const distance = Math.abs(targetPos - startPos);
+
+    // Si on est déjà sur place, on arrête tout
+    if (distance === 0) {
+        if (onComplete) onComplete();
+        return;
+    }
+
+    const direction = Math.sign(targetPos - startPos);
+
+    // 1. Calculs théoriques du profil de mouvement
+    // Temps et distance pour atteindre la vitesse max
+    let timeToAccel = maxSpeed / accel;
+    let distToAccel = 0.5 * accel * timeToAccel * timeToAccel;
+
+    let cruiseDist = distance - (2 * distToAccel);
+    let cruiseTime = 0;
+    let actualMaxSpeed = maxSpeed;
+
+    // Si la distance est trop courte pour atteindre la vitesse max (Profil Triangulaire)
+    if (cruiseDist < 0) {
+        distToAccel = distance / 2;
+        actualMaxSpeed = Math.sqrt(2 * accel * distToAccel); // Nouvelle vitesse de pointe
+        timeToAccel = actualMaxSpeed / accel;
+        cruiseDist = 0;
+        cruiseTime = 0;
+    } else {
+        // Profil Trapézoïdal classique
+        cruiseTime = cruiseDist / actualMaxSpeed;
+    }
+
+    const totalTime = (2 * timeToAccel) + cruiseTime;
+
+    // 2. Boucle d'animation
+    const startTime = performance.now();
+
+    function animationLoop(currentTime) {
+        // Temps écoulé en secondes
+        const t = (currentTime - startTime) / 1000;
+
+        if (t >= totalTime) {
+            // Mouvement terminé, on force la valeur cible exacte
+            onUpdate(targetPos);
+            if (onComplete) onComplete();
+            return;
+        }
+
+        let currentDist = 0;
+
+        // Phase 1 : Accélération
+        if (t <= timeToAccel) {
+            currentDist = 0.5 * accel * t * t;
+        }
+        // Phase 2 : Vitesse de croisière
+        else if (t <= timeToAccel + cruiseTime) {
+            const timeInCruise = t - timeToAccel;
+            currentDist = distToAccel + (actualMaxSpeed * timeInCruise);
+        }
+        // Phase 3 : Décélération
+        else {
+            const timeInDecel = t - timeToAccel - cruiseTime;
+            // Formule : d = d_initiale + v*t - 1/2*a*t²
+            currentDist = distToAccel + cruiseDist + (actualMaxSpeed * timeInDecel) - (0.5 * accel * timeInDecel * timeInDecel);
+        }
+
+        // Calcul de la position réelle sur l'axe
+        const currentPos = startPos + (direction * currentDist);
+
+        // On envoie la valeur à ton interface (arrondie ou non selon tes besoins)
+        onUpdate(Math.round(currentPos));
+
+        // On rappelle la fonction à la prochaine frame
+        requestAnimationFrame(animationLoop);
+    }
+
+    // Lancement de la boucle
+    requestAnimationFrame(animationLoop);
 }

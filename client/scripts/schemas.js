@@ -17,7 +17,17 @@ window.addEventListener('resize', () => {
     const ctx = canvas.getContext('2d');
 });
 
+function setAngleZ(angle) {
+    data.angleZ = -angle * Math.PI / 180;
+    $('#anglez-input').val(angle)
+}
+function setAngleX(angle) {
+    data.angle = angle * Math.PI / 180;
+    $('#angle-input').val(angle)
+}
+function setLength(length) {
 
+}
 $('#anglez-input').on('input', function() {
     data.angleZ = -parseFloat($(this).val()) * Math.PI / 180;
     console.log(data.angleZ)
