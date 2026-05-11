@@ -99,6 +99,17 @@ io.on('connection', (socket) => {
             });
         }
     });
+    ocket.on('resetMotors', () => {
+        if (activePort && activePort.isOpen) {
+            activePort.write('RESET\n', (err) => {
+                if (err) {
+                    logToClient(`Erreur lors de l'envoi de la commande STOP à l'Arduino : ${err.message}`, 2, true);
+                } else {
+                    socket.emit('onReset');
+                }
+            });
+        }
+    });
     socket.on('tableData', (tableData) => {
         const filePath = path.join(__tempdir, 'tableData.json');
         fs.mkdir(__tempdir, { recursive: true }, (err) => {
@@ -223,9 +234,10 @@ async function setActivePort(path) {
                 communicationStatus = true;
             } else if (data.trim().startsWith("r")) {
                 const steps = data.trim().split("_")[1];
-                io.emit("motorCallback", { motor: data.trim()[1], steps: steps });
                 io.emit("arduino-data", "Rotation du moteur " + data.trim()[1] + ',de ' + steps + " pas.");
 
+                motorsPositions[data.trim()[1]] = motorsPositions[data.trim()[1]] + parseInt(steps)
+                io.emit("motorCallback", motorsPositions);
             } else {
                 io.emit("arduino-data", data);
             }

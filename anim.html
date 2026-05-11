@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<body>
+    
+    <canvas id="screen" width="1920" height="1080"></canvas>
+
+
+    <script src="client/scripts/libs/gsap/gsap.min.js"></script>
+    <script src="client/scripts/libs/gsap/SplitText.min.js"></script>
+    
+    <script src="client/scripts/libs/jquery.js"></script>
+</body>
+<style>
+    *{margin: 0;}
+</style>
+<script>
+    let elements = []
+
+    window.onload = function() {
+
+        for (i = 0; i < 800; i++) {
+            elements.push({
+                x : Math.random() * 1920,
+                y : Math.random() * 1080,
+                dirX : Math.random() * 2 - 1,
+                dirY : Math.random() * 2 - 1
+            })
+        }
+        var c = document.getElementById("screen");
+        var ctx = c.getContext("2d");
+
+        ctx.drawLine = function(x1, y1, x2, y2) {
+            this.moveTo(x1, y1)
+            this.lineTo(x2, y2)
+            this.stroke()
+        }
+        ctx.drawRect = function (x, y, w, h, c) {
+            this.fillStyle = c
+            this.fillRect(x, y, w, h)
+        }
+        ctx.drawCircle = function (x, y, r) {
+            this.beginPath();
+            this.arc(x, y, r, 0, 2 * Math.PI);
+            this.stroke();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, c.width, c.height);
+
+            for (const e of elements) {
+                if (e.x + e.dirX > 1920) e.x = 0;
+                else if (e.x + e.dirX < 0) e.x = 1920;
+                if (e.y + e.dirY > 1080) e.y = 0;
+                else if (e.y + e.dirY < 0) e.y = 1080;
+
+                e.x += e.dirX;
+                e.y += e.dirY;
+
+                ctx.drawRect(e.x - 2, e.y - 2, 4, 4, "#000");
+
+                let betterE = null;
+                let distanceMin = 1000;
+
+                for (const e2 of elements) {
+                    if (e === e2) continue;
+                    const dx = e2.x - e.x;
+                    const dy = e2.y - e.y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+
+                    if (d < distanceMin) {
+                        distanceMin = d;
+                        betterE = e2;
+                    }
+                }
+                if (betterE) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${1 - distanceMin / 200})`;
+                    ctx.moveTo(e.x, e.y);
+                    ctx.lineTo(betterE.x, betterE.y);
+                    ctx.stroke();
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
+    }
+
+    
+</script>

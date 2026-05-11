@@ -483,6 +483,13 @@ socket.on('getTableData', (data) => {
     dataLoaded = true
 });
 
+socket.on("motorCallback", function(data) {
+    $("#mA_angle").html(data.X)
+    $("#mB_angle").html(data.Y)
+    $("#mC_angle").html(data.Z)
+
+})
+
 var input = document.getElementById("arduino-cmd-input");
 input.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
@@ -496,9 +503,20 @@ $('#btn-stop').click(() => {
     if (!communicationStatus) return showNotification("Erreur", "Impossible d'arrêter : pas de communication avec l'Arduino", "danger");
     socket.emit("stopArduino");
 });
+$('#btn-reset').click(() => {
+    if (!communicationStatus) return showNotification("Erreur", "Impossible d'arrêter : pas de communication avec l'Arduino", "danger");
+    socket.emit("resetMotors");
+});
+
+
 socket.on('onStopArduino', () => {
     showNotification("Information", "Demande reçue: ARRÊT D'URGENCE", "info");
 });
+socket.on('onReset', () => {
+    showNotification("Information", "Demande reçue: MOUVEMENT LIBRE (on/off)", "info");
+});
+
+
 
 function sendTableDataToServer() {
     const tableData = hot.getData();
@@ -715,22 +733,22 @@ $('#closeArduioWarn').on('click', function() {
 // manual control
 
 $('#mA_plus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateX 10")
+    socket.emit('sendArduinoCommand', "rotateX 100")
 })
 $('#mA_minus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateX -10")
+    socket.emit('sendArduinoCommand', "rotateX -100")
 })
 $('#mB_plus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateY 10")
+    socket.emit('sendArduinoCommand', "rotateY 100")
 })
 $('#mB_minus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateY -10")
+    socket.emit('sendArduinoCommand', "rotateY -100")
 })
 $('#mC_plus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateZ 10")
+    socket.emit('sendArduinoCommand', "rotateZ 100")
 })
 $('#mC_minus').on('click', function () {
-    socket.emit('sendArduinoCommand', "rotateZ -10")
+    socket.emit('sendArduinoCommand', "rotateZ -100")
 })
 
 var motorsPositions = {
@@ -742,3 +760,20 @@ socket.on("heartbreath", function(data) {
     motorsPositions = data.motorsPositions
 })
 
+
+function positionToCoordinates(pos) {
+    const height = pos[0]
+    const width = pos.substring(1) - 8
+
+    if (height == "A") {
+        return {
+            az : Math.atan((8*width) / 50) / (Math.PI/180),
+            ay: Math.acos(Math.sqrt(2500 + 64 * width * width) / 80) / (Math.PI / 180)
+        }
+    }
+}
+function treatAction(action) {
+    if (action.type == "MOVE") {
+        const pos = findContainer(action.container)
+    }
+}
